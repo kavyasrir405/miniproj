@@ -149,11 +149,11 @@ const Navbar = ({ logout, isAuthenticated, user }) => {
                     )}
 </ul>
                 {isAuthenticated && (
-                    <Fragment>
+                    
                         <li className='nav-items'>
                             <button onClick={openProfile} className='person'><GoPersonFill /></button>
                         </li>
-                    </Fragment>
+                    
                 )}
             </nav>
         </Fragment>

@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import './css/Contribution.css';
-import Sidebar from "../components/Sidebar"
+import Sidebar from "../components/Sidebar";
+import ProjectPage from './ProjectPage';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

@@ -9,7 +9,8 @@ import DisplayIssueFiltersWithoutPop from './DisplayIssueFiltersWithoutPop';
 import Comment from './Comment';
 import IssueCardHorizontal from './IssueCardHorizontal';
 import Scroll from '../components/Scroll';
-import Sidebar from "../components/Sidebar"
+import Sidebar from "../components/Sidebar";
+import ProjectPage from './ProjectPage';
 
 const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
   const { projectid } = useParams();
@@ -61,6 +62,7 @@ const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
     <Sidebar />
     <div className='main-component'>
       <div className='headers-for-filters top-component'>
+      <div className='team-time'><ProjectPage/></div>
         <button onClick={() => { toggleView(); setSelectedIssue(''); }} className='toggleButton'>{viewType === 'detailed' ? 'List View' : 'Detailed View'}</button>
         <select
           value={selectedFilter}
@@ -93,7 +95,8 @@ const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
       <div className='bottom-component'>
         {viewType === 'detailed' ? (
           <div className='display-container'>
-            <div className="issue-cards-container">
+            
+            <div className="issue-cards-container" style={{overflowY:'scroll', border:'1px',scrollbarWidth: 'none',}}>
               {Array.isArray(data) && data.length > 0 ? (
                 data.map(item => (
                   <IssueCard key={item.issue_id} issue={item} onClick={() => { setSelectedIssue(item); setIsPopupOpen(true); }} />
@@ -102,6 +105,7 @@ const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
                 <h4>No issues found</h4>
               )}
             </div>
+            
             <div className='info-display-container'>
               {selectedIssue ? (
                 <Scroll>
@@ -130,7 +134,8 @@ const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
             </div>
             {Array.isArray(data) && data.length > 0 ? (
               data.map(item => (
-                <IssueCardHorizontal key={item.issue_id} issue={item} onClick={() => { setSelectedIssue(item); setIsPopupOpen(true); }} />
+                <IssueCardHorizontal key={item.issue_id} issue={item} 
+                  onClick={() => { setSelectedIssue(item); setIsPopupOpen(true); }} />
               ))
             ) : (
               <h4>No issues found</h4>

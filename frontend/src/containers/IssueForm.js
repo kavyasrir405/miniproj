@@ -127,7 +127,7 @@ const IssueForm = ({ onClose, user }) => {
             ))}
           </select>
         </div>
-       
+
         <div>
           <label>Issue Type:</label>
           <select value={issueType} onChange={(e) => setIssueType(e.target.value)}>
@@ -179,30 +179,33 @@ const IssueForm = ({ onClose, user }) => {
             <option value="Done">Done</option>
           </select>
         </div>
-        <div>
+        <div className="story-point-container">
           <label>Story Points:</label>
-          <input
-            type="range"
-            min="1"
-            max="3"
-            value={storyPoint}
-            onChange={handleStoryPointChange}
-            style={{
-              background: `linear-gradient(to right, blue, red)`,
-              width: '100%',
-            }}
-          />
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>1</span>
-            <span>2</span>
-            <span>3</span>
+          <div className="story-point-slider">
+            <input
+              type="range"
+              min="1"
+              max="3"
+              value={storyPoint}
+              onChange={handleStoryPointChange}
+              style={{
+                background: `linear-gradient(to right, blue, red)`,
+                width: '100%',
+              }}
+            />
+            <ul className="story-point-labels">
+              <li>1</li>
+              <li>2</li>
+              <li>3</li>
+            </ul>
           </div>
         </div>
+
         {issueType !== "Epic" && (
           <div>
             <label>Epic:</label>
             <select value={epic} onChange={(e) => setEpic(e.target.value)}>
-             
+
               <option value="">Select...</option>
               {epics.map((epic) => (
                 <option key={epic.Epic_Id} value={epic.Epic_Id}>

@@ -928,6 +928,35 @@ def get_user_profile(request):
         print(data)
     return JsonResponse(data)
 
+@csrf_exempt
+def update_user_profile(request):
+    print("getting update request", request)
+    if request.method == 'PUT':
+        data = json.loads(request.body)
+        email = data.get('email')
+        user = get_object_or_404(UserAccount, email=email)
+
+        user.first_name = data.get('first_name', user.first_name)
+        user.last_name = data.get('last_name', user.last_name)
+        user.usn = data.get('usn', user.usn)
+        user.phone_number = data.get('phone_number', user.phone_number)
+
+        user.save()
+
+        response_data = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'usn': user.usn,
+            'phone_number': user.phone_number,
+        }
+
+        return JsonResponse(response_data)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+
 
 @csrf_exempt
 def get_assignee(request):

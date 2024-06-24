@@ -121,6 +121,23 @@ const DisplayIssueFilters = ({ data, user }) => {
             )}
           </p> */}
           <p>
+            <strong>Project ID:</strong>
+            {/* {isEditing ? (
+              <div>
+                <select className="display-issue-select" value={selectedProject} onChange={(e) => setSelectedProject(e.target.value)}>
+                  <option value="">Select...</option>
+                  {projects.map((project) => (
+                    <option key={project.projectid} value={project.projectid}>
+                      {project.projectname}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : ( */}
+              {issue.projectId_id || '----'}
+            {/* )} */}
+          </p>
+          <p>
             <strong>Description:</strong>
             {isEditing ? (
               <textarea className="display-issue-textarea" name="description" value={issue.description} onChange={handleChange} />
@@ -188,23 +205,7 @@ const DisplayIssueFilters = ({ data, user }) => {
               issue.sprint_id || '----'
             )}
           </p>
-          <p>
-            <strong>Project ID:</strong>
-            {isEditing ? (
-              <div>
-                <select className="display-issue-select" value={selectedProject} onChange={(e) => setSelectedProject(e.target.value)}>
-                  <option value="">Select...</option>
-                  {projects.map((project) => (
-                    <option key={project.projectid} value={project.projectid}>
-                      {project.projectname}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ) : (
-              issue.projectId_id || '----'
-            )}
-          </p>
+          
           <p>
             <strong>Story Points:</strong>
             {isEditing ? (
