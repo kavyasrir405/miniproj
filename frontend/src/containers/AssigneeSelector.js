@@ -54,14 +54,14 @@ const AssigneeSelector = ({ projectid, issue, onAssigneeChange }) => {
   }, [selectedAssignee]);
 
   return (
-    <div className="assignee-container">
+    <div className="assignee-container2">
       <div className="assignee" onClick={handleAssigneeClick}>
         {selectedAssignee ? (
           <div className="assignee-icon" id="userIcon" style={{ backgroundColor: assigneeColor }}>
             {assigneeInitial}
           </div>
         ) : (
-          <FaUser />
+          <div className='assignee-icon' id="userIcon" style={{ color: 'black' }}><FaUser /></div>
         )}
       </div>
       {dropdownVisible && assigneeOptions.length > 0 && (

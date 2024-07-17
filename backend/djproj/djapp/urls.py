@@ -23,7 +23,6 @@ urlpatterns = [
     path('get_sprints/', get_sprints, name="get_sprints"),
     path('get_epics/', get_epics, name="get_epics"),
     path('get_activesprints/', get_activesprints, name="get_sprints"),
-    # path('project_dropdown_data/',update_sprintName update_issueassignee/ project_dropdown_data, name="project_dropdown_data" ),
     path('csrf_token/', csrf_token, name='csrf_token'),  
     path('create_issue/', create_issue, name='create_issue'),
     path('filters_function/', filters_function, name='filters_function'),
@@ -41,4 +40,7 @@ urlpatterns = [
     path('fetch_assignee_color/', fetch_assignee_color, name='fetch_assignee_color'),
     path('get_user_profile/', get_user_profile, name='get_user_profile'),
     path('get_assignee/', get_assignee, name='get_assignee'),
+    path('update_user_profile/',update_user_profile, name = 'update_user_profile'),
+    path('upload/', FileUploadView.as_view(), name='file-upload'),
+
 ]

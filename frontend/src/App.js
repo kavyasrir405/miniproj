@@ -26,6 +26,7 @@ import Time from './containers/Time';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Timemaxi from './containers/Timemaxi';
+import FileUpload from './containers/FileUpload';
 
 
 const App = () => {
@@ -53,7 +54,7 @@ const App = () => {
             <Route path="/project/:projectid/contributions" element={<Contributions />} />
             <Route path="/project/:projectid/time" element={<Time />} />
             <Route path="/project/:projectid/times" element={<Timemaxi />} />
-            
+            <Route path="/fileupload" element={<FileUpload />} />
             </Routes>
             </Layout>
         </Router>

@@ -1,11 +1,5 @@
-/* Updated Contribution.css */
-
-/* Sidebar component styles */
-.sidebar {
-    /* Add your sidebar styles here */
-  }
   .contributions-maindiv{
-    margin-top: 15rem;
+    margin-top: 10rem;
         display: flex;
         justify-content: center; /* Center horizontally */
         align-items: center; /* Center vertically */

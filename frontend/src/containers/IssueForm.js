@@ -45,6 +45,7 @@ const IssueForm = ({ onClose, user }) => {
       };
 
       if (issueType !== "Epic") {
+        console.log(attachment);
         await axios.post('http://localhost:8000/djapp/create_issue/', data);
       } else {
         data.StartDate = new Date(startDate).toISOString().split('T')[0];
@@ -95,7 +96,6 @@ const IssueForm = ({ onClose, user }) => {
         if (!selectedProject) return;
         const response = await axios.get(`http://localhost:8000/djapp/get_epics/?projectid=${selectedProject}`);
         setEpics(response.data.epics_in_project);
-        console.log(response)
       } catch (error) {
         console.error('Error fetching epics:', error);
       }
@@ -127,7 +127,7 @@ const IssueForm = ({ onClose, user }) => {
             ))}
           </select>
         </div>
-       
+
         <div>
           <label>Issue Type:</label>
           <select value={issueType} onChange={(e) => setIssueType(e.target.value)}>
@@ -160,6 +160,13 @@ const IssueForm = ({ onClose, user }) => {
           </div>
         )}
         <div>
+          <label>Summary:</label>
+          <textarea
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+          />
+        </div>
+        <div>
           <label>Priority:</label>
           <select value={priority} onChange={(e) => setPriority(e.target.value)}>
             <option value="">Select...</option>
@@ -179,30 +186,33 @@ const IssueForm = ({ onClose, user }) => {
             <option value="Done">Done</option>
           </select>
         </div>
-        <div>
+        <div className="story-point-container">
           <label>Story Points:</label>
-          <input
-            type="range"
-            min="1"
-            max="3"
-            value={storyPoint}
-            onChange={handleStoryPointChange}
-            style={{
-              background: `linear-gradient(to right, blue, red)`,
-              width: '100%',
-            }}
-          />
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>1</span>
-            <span>2</span>
-            <span>3</span>
+          <div className="story-point-slider">
+            <input
+              type="range"
+              min="1"
+              max="3"
+              value={storyPoint}
+              onChange={handleStoryPointChange}
+              style={{
+                background: `linear-gradient(to right, blue, red)`,
+                width: '100%',
+              }}
+            />
+            <ul className="story-point-labels">
+              <li>1</li>
+              <li>2</li>
+              <li>3</li>
+            </ul>
           </div>
         </div>
+
         {issueType !== "Epic" && (
           <div>
             <label>Epic:</label>
             <select value={epic} onChange={(e) => setEpic(e.target.value)}>
-             
+
               <option value="">Select...</option>
               {epics.map((epic) => (
                 <option key={epic.Epic_Id} value={epic.Epic_Id}>
@@ -212,13 +222,7 @@ const IssueForm = ({ onClose, user }) => {
             </select>
           </div>
         )}
-        <div>
-          <label>Summary:</label>
-          <textarea
-            value={summary}
-            onChange={(e) => setSummary(e.target.value)}
-          />
-        </div>
+        
         <div>
           <label>Assignee:</label>
           <select value={assignee} onChange={(e) => setAssignee(e.target.value)}>

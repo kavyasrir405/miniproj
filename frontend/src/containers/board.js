@@ -9,6 +9,7 @@ import { FaBug } from 'react-icons/fa';
 import { FaTasks } from "react-icons/fa";
 import Sidebar from "../components/Sidebar";
 import AssigneeSelector from './AssigneeSelector';
+import ProjectPage from "./ProjectPage";
 import './css/board.css'; // Importing the CSS file
 import BoardsIssueDisplay from './BoardsIssueDisplay';
 
@@ -74,8 +75,10 @@ const DraggableItem = ({ id, IssueName, status, projectid, IssueType, assignee, 
         onClick={togglePopup}
       >
         <div className="boardDraggableItemDetails">
+          <div className='icon'>
           {icon}
-          <div className={status === 'Done' ? 'done' : ''}> Issue Name: {IssueName}</div>
+          </div>
+          <div className={status === 'Done' ? 'done' : ''} id="issuename">  {IssueName}</div>
         </div>
         <div className="Assinee" onClick={(event) => event.stopPropagation()}>
           <AssigneeSelector issue={item} projectid={projectid} onAssigneeChange={(newAssignee) => handleAssigneeChange(newAssignee)} />
@@ -103,8 +106,31 @@ const DropZone = ({ id, items, setItems, onDrop, projectid, user, selectedSprint
 
   const [showCreateIssue, setShowCreateIssue] = useState(false);
   const [newIssueName, setNewIssueName] = useState('');
+  const scrollRef = useRef(null);
 
   const inputRef = useRef(null);
+  useEffect(() => {
+    const scrollFunction = () => {
+      if (showCreateIssue && scrollRef.current) {
+        const scrollElement = scrollRef.current;
+        const offset = 100; // Adjust as needed
+        window.scrollTo({
+          top: scrollElement.getBoundingClientRect().top + window.scrollY - offset,
+          behavior: 'smooth',
+        });
+      }
+    };
+  
+    // Scroll on next tick to ensure DOM is updated
+    if (showCreateIssue) {
+      setTimeout(scrollFunction, 0); // Delayed scroll
+    }
+  
+    return () => {
+      clearTimeout(scrollFunction);
+    };
+  }, [showCreateIssue]);
+  
 
   useEffect(() => {
     if (showCreateIssue) {
@@ -193,10 +219,11 @@ const DropZone = ({ id, items, setItems, onDrop, projectid, user, selectedSprint
       )}
 
       {showCreateIssue && (
-        <div className="create-issue-form" ref={inputRef}>
+        <div className="create-issue-form"  ref={scrollRef} >
           <input
             type="text"
             value={newIssueName}
+            ref={inputRef}
             onChange={(e) => setNewIssueName(e.target.value)}
             placeholder="Enter issue name"
           />
@@ -324,6 +351,7 @@ const Board = ({ user }) => {
           <div className='boards'>
             <div className="boardContainer">
               <div className='selectsprint'>
+
                 <div className="head">
                   <h3 className="heading">Select Sprint</h3>
                 </div>
@@ -337,8 +365,10 @@ const Board = ({ user }) => {
                     ))}
                   </select>
                 </div>
+                </div>
+                <div className='team-time'><ProjectPage/></div>
                 <button className="completebtn" onClick={handleSprintComplete}>Complete Sprint</button>
-              </div>
+             
               <div className="boardFlexContainer">
                 <DropZone id={1} items={items1} setItems={setItems1} onDrop={handleDrop} user={user} selectedSprint={selectedSprint} projectid={projectid} setReload={setReload} />
                 <DropZone id={2} items={items2} setItems={setItems2} onDrop={handleDrop} user={user} selectedSprint={selectedSprint} projectid={projectid} setReload={setReload} />

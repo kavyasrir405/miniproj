@@ -97,29 +97,18 @@ const DisplayIssueFilters = ({ data, user }) => {
 
     fetchProjects();
   }, [user.email]);
-
+  
   return (
     <div className='display-issue-main-container'>
       {issue ? (
         <div className="display-issue-card">
-          <h1 className="display-issue-title">{issue.IssueName || '----'}</h1>
-          {/* <p>
-            <strong>Assigned by:</strong> {issue.assigned_by || '----'}
-          </p>
+          <h1 className="display-issue-title">{issue.IssueName ||issue.EpicName|| '----'}</h1>
+         
           <p>
-            <strong>Type:</strong>
-            {isEditing ? (
-              <select className="display-issue-select" name="IssueType" value={issue.IssueType} onChange={handleChange}>
-                <option value="">Select...</option>
-                <option value="Story">Story</option>
-                <option value="Task">Task</option>
-                <option value="Bug">Bug</option>
-                <option value="Epic">Epic</option>
-              </select>
-            ) : (
-              issue.IssueType || '----'
-            )}
-          </p> */}
+            <strong>Project ID:</strong>
+              {issue.projectId_id || '----'}
+           
+          </p>
           <p>
             <strong>Description:</strong>
             {isEditing ? (
@@ -133,9 +122,9 @@ const DisplayIssueFilters = ({ data, user }) => {
             {isEditing ? (
               <select className="display-issue-select" name="status" value={issue.status} onChange={handleChange}>
                 <option value="">Select...</option>
-                <option value="to_do">To Do</option>
-                <option value="in_progress">In Progress</option>
-                <option value="done">Done</option>
+                <option value="To-Do">To Do</option>
+                <option value="In-Progress">In Progress</option>
+                <option value="Done">Done</option>
               </select>
             ) : (
               issue.status || '----'
@@ -188,23 +177,7 @@ const DisplayIssueFilters = ({ data, user }) => {
               issue.sprint_id || '----'
             )}
           </p>
-          <p>
-            <strong>Project ID:</strong>
-            {isEditing ? (
-              <div>
-                <select className="display-issue-select" value={selectedProject} onChange={(e) => setSelectedProject(e.target.value)}>
-                  <option value="">Select...</option>
-                  {projects.map((project) => (
-                    <option key={project.projectid} value={project.projectid}>
-                      {project.projectname}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ) : (
-              issue.projectId_id || '----'
-            )}
-          </p>
+          
           <p>
             <strong>Story Points:</strong>
             {isEditing ? (

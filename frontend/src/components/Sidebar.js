@@ -9,6 +9,7 @@ import { GoIssueClosed } from "react-icons/go";
 import { BiSolidPieChartAlt2 } from "react-icons/bi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
+import { useSelector } from 'react-redux';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +19,7 @@ const Sidebar = () => {
   const navigateTo = (path) => {
     navigate(path);
   };
-
+  // const projectName=useSelector(state => state.auth.project.projectname);
   return (
     <section
       className="page sidebar-3-page"

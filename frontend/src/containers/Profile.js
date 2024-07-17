@@ -2,19 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import './css/profile.css';
-import Sidebar from "../components/Sidebar";
 import { FaRegEdit } from "react-icons/fa";
-import {useParams} from 'react-router-dom';
 
 const Profile = ({ user }) => {
-
-  const {projectid}  = useParams();
   const [profileData, setProfileData] = useState({
     first_name: '',
     last_name: '',
     email: '',
     usn: '',
     phone_number: '',
+    color: '',
+    first_letter: '',
   });
 
   const [isEditing, setIsEditing] = useState({
@@ -29,12 +27,10 @@ const Profile = ({ user }) => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        console.log(user.email,"inside fetch")
         const response = await axios.get('http://localhost:8000/djapp/get_user_profile/', {
           params: { email: user.email }
         });
         setProfileData(response.data);
-        // console.log(response.data)
       } catch (error) {
         console.error('Error fetching profile data:', error);
       }
@@ -73,123 +69,123 @@ const Profile = ({ user }) => {
   };
 
   const handleSubmit = async (e, field) => {
-    if (e.key === 'Enter') {
-      // Check if there are any error messages
-      if (errorMessage) {
-        // Display error message and prevent submission
-        console.error('Invalid input:', errorMessage);
-        return;
-      }
+    e.preventDefault();
 
-      try {
-        const response = await axios.put(
-          'http://localhost:8000/djapp/user/profile/update/',
-          { ...profileData, email: user.email },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-        setProfileData(response.data);
-        setIsEditing({ ...isEditing, [field]: false });
-      } catch (error) {
-        console.error('Error updating profile data:', error);
-      }
+    // Check if there are any error messages
+    if (errorMessage) {
+      // Display error message and prevent submission
+      console.error('Invalid input:', errorMessage);
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        'http://localhost:8000/djapp/update_user_profile/',
+        { ...profileData, email: user.email },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      setProfileData(response.data);
+      setIsEditing({ ...isEditing, [field]: false });
+    } catch (error) {
+      console.error('Error updating profile data:', error);
     }
   };
 
   return (
     <>
       <div className="profile-container">
-        {/* <div className='profile-photo'>
-          <span className='circle' style={{ backgroundColor: profileData.color, borderRadius: '50%', height:'7rem',width:'7rem' }}>
-            {profileData.first_letter}
-          </span>
-        </div> */}
-        <div className="profile-field">
-          <label htmlFor="first_name">First Name:</label>
-          {isEditing.first_name ? (
-            <input
-              type="text"
-              id="first_name"
-              name="first_name"
-              value={profileData.first_name}
-              onChange={handleChange}
-              onBlur={(e) => handleSubmit(e, 'first_name')}
-              onKeyPress={(e) => handleSubmit(e, 'first_name')}
-            />
-          ) : (
-            <>
-              <span className="editable" onDoubleClick={() => handleEditClick('first_name')}>{profileData.first_name}</span>
-              <FaRegEdit onClick={() => { handleEditClick('first_name') }} />
-            </>
-          )}
+        <div className='left-side-profile' style={{ backgroundColor: profileData.color }}>
+          {profileData.first_letter}
         </div>
-        <div className="profile-field">
-          <label htmlFor="last_name">Last Name:</label>
-          {isEditing.last_name ? (
-            <input
-              type="text"
-              id="last_name"
-              name="last_name"
-              value={profileData.last_name}
-              onChange={handleChange}
-              onBlur={(e) => handleSubmit(e, 'last_name')}
-              onKeyPress={(e) => handleSubmit(e, 'last_name')}
-            />
-          ) : (
-            <>
-              <span className="editable" onDoubleClick={() => handleEditClick('last_name')}>{profileData.last_name}</span>
-              <FaRegEdit onClick={() => { handleEditClick('last_name') }} />
-            </>
-          )}
-        </div>
-        <div className="profile-field">
-          <label htmlFor="email">Email:</label>
-          <span>{profileData.email}</span>
-        </div>
-        <div className="profile-field">
-          <label htmlFor="usn">USN:</label>
-          {isEditing.usn ? (
-            <>
+        <div className='right-side-profile'>
+          <div className="profile-field">
+            <label htmlFor="first_name">First Name:</label>
+            {isEditing.first_name ? (
               <input
                 type="text"
-                id="usn"
-                name="usn"
-                value={profileData.usn}
+                id="first_name"
+                name="first_name"
+                value={profileData.first_name}
                 onChange={handleChange}
-                onBlur={(e) => handleSubmit(e, 'usn')}
-                onKeyPress={(e) => handleSubmit(e, 'usn')}
+                onBlur={(e) => handleSubmit(e, 'first_name')}
+                onKeyPress={(e) => e.key === 'Enter' && handleSubmit(e, 'first_name')}
               />
-              {errorMessage && <span className="error-message">{errorMessage}</span>}
-            </>
-          ) : (
-            <>
-              <span className="editable" onDoubleClick={() => handleEditClick('usn')}>{profileData.usn}</span>
-              <FaRegEdit onClick={() => { handleEditClick('usn') }} />
-            </>
-          )}
-        </div>
+            ) : (
+              <>
+                <span className="editable" onDoubleClick={() => handleEditClick('first_name')}>{profileData.first_name}</span>
+                <FaRegEdit onClick={() => { handleEditClick('first_name') }} />
+              </>
+            )}
+          </div>
+          <div className="profile-field">
+            <label htmlFor="last_name">Last Name:</label>
+            {isEditing.last_name ? (
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                value={profileData.last_name}
+                onChange={handleChange}
+                onBlur={(e) => handleSubmit(e, 'last_name')}
+                onKeyPress={(e) => e.key === 'Enter' && handleSubmit(e, 'last_name')}
+              />
+            ) : (
+              <>
+                <span className="editable">{profileData.last_name}</span>
+                <FaRegEdit onClick={() => { handleEditClick('last_name') }} />
+              </>
+            )}
+          </div>
+          <div className="profile-field">
+            <label htmlFor="email">Email:</label>
+            <span>{profileData.email}</span>
+          </div>
+          <div className="profile-field">
+            <label htmlFor="usn">USN:</label>
+            {isEditing.usn ? (
+              <>
+                <input
+                  type="text"
+                  id="usn"
+                  name="usn"
+                  value={profileData.usn}
+                  onChange={handleChange}
+                  onBlur={(e) => handleSubmit(e, 'usn')}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSubmit(e, 'usn')}
+                />
+                {errorMessage && <span className="error-message">{errorMessage}</span>}
+              </>
+            ) : (
+              <>
+                <span className="editable" onDoubleClick={() => handleEditClick('usn')}>{profileData.usn}</span>
+                <FaRegEdit onClick={() => { handleEditClick('usn') }} />
+              </>
+            )}
+          </div>
 
-        <div className="profile-field">
-          <label htmlFor="phone_number">Phone Number:</label>
-          {isEditing.phone_number ? (
-            <input
-              type="text"
-              id="phone_number"
-              name="phone_number"
-              value={profileData.phone_number}
-              onChange={handleChange}
-              onBlur={(e) => handleSubmit(e, 'phone_number')}
-              onKeyPress={(e) => handleSubmit(e, 'phone_number')}
-            />
-          ) : (
-            <>
-              <span className="editable" onDoubleClick={() => handleEditClick('phone_number')}>{profileData.phone_number}</span>
-              <FaRegEdit onClick={() => { handleEditClick('phone_number') }} />
-            </>
-          )}
+          <div className="profile-field">
+            <label htmlFor="phone_number">Phone Number:</label>
+            {isEditing.phone_number ? (
+              <input
+                type="text"
+                id="phone_number"
+                name="phone_number"
+                value={profileData.phone_number}
+                onChange={handleChange}
+                onBlur={(e) => handleSubmit(e, 'phone_number')}
+                onKeyPress={(e) => e.key === 'Enter' && handleSubmit(e, 'phone_number')}
+              />
+            ) : (
+              <>
+                <span className="editable" onDoubleClick={() => handleEditClick('phone_number')}>{profileData.phone_number}</span>
+                <FaRegEdit onClick={() => { handleEditClick('phone_number') }} />
+              </>
+            )}
+          </div>
         </div>
       </div>
     </>

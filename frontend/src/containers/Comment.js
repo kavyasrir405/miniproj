@@ -98,8 +98,9 @@ function Comment({ user, data }) {
         {comments.length > 0 ? (
           comments.map((comment) => (
             <div key={comment.comment_id} className="comment-item">
-              <p className="comment-author"><strong>{comment.written_by}:</strong> {comment.comment_body}</p>
-              <p className="comment-date"><small>{comment.created_at}</small></p>
+              <p className="comment-body">{comment.comment_body}</p>
+              <p className="comment-author-date">{comment.written_by}</p>
+              <p className="comment-author-date"><small>{comment.created_at}</small></p>
               {comment.written_by === user.email && (
                 <FaRegEdit onClick={() => startEditing(comment)} className="comment-edit-pen"></FaRegEdit>
               )}
@@ -141,4 +142,3 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(Comment);
-

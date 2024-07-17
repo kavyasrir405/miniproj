@@ -149,7 +149,9 @@ body {
   z-index: 1;
   white-space: nowrap;
 }
-
+.scroll-container{
+  height:fit-content;
+}
 
 
 
@@ -198,21 +200,23 @@ body {
   cursor: pointer;
 }
 
+
 .assignee-icon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background-color: #a8406a;
-  color: #fff;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: bold;
 }
 
 #userIcon {
   cursor: pointer;
+  color:#ddd;
   margin-left: 10px;
 }
 
@@ -353,9 +357,9 @@ body {
 
 .usericon-dropdown {
   position: absolute;
-  background-color: #ccc;
+  background-color: #fffafa;
   left: auto;
-  z-index: 1;
+  z-index: 1000;
 }
 
 .assignee-container {

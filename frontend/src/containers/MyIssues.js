@@ -77,6 +77,7 @@ function MyIssues({ user, isSidebarCollapsed }) {
 
     <ProjectPage/>
     <div className='main-component'>
+    <div className='team-time'><ProjectPage/></div>
       <div className='headers-for-filters top-component'>
         <button onClick={() => { toggleView(); setSelectedIssue(''); }} className='toggleButton'>
 

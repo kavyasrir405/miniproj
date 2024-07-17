@@ -73,6 +73,14 @@
   color: black;
 }
 
+.modal-content{
+  width: 35rem;
+}
+.close{
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 .dropdown {
   display: block;
   position: absolute;
