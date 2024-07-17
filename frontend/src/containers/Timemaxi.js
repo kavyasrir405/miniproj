@@ -6,10 +6,9 @@ import Cols from './Cols';
 import html2canvas from 'html2canvas';
 import { FiMinimize2 } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
-import Timeline from './Timeline'; 
+import Timeline from './Timeline'; // Import your Timeline component here
 import { PiExportBold } from "react-icons/pi";
-
-
+import { TbArrowsMinimize } from "react-icons/tb";
 
 const Timemaxi = ({projectId}) => {
   const svgRef = useRef();
@@ -17,12 +16,13 @@ const Timemaxi = ({projectId}) => {
   const containerrev = useRef(null);
   const [popup, setPopup] = useState({ visible: false, x: 0, y: 0, sprint: null });
   const [minimized, setMinimized] = useState(false);
-  const { projectid } = useParams(); // Fetch projectid from URL
+  
   function formatDate(dateString) {
     const date = new Date(dateString);
     const options = { month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
   }
+
   const months = [
     { name: 'January', days: 31 },
     { name: 'February', days: 28 },
@@ -37,25 +37,84 @@ const Timemaxi = ({projectId}) => {
     { name: 'November', days: 30 },
     { name: 'December', days: 31 },
   ];
+
   const handleMinimizeClick = () => {
-    setMinimized(true); // Set maximized mode
+    setMinimized(true); // Set minimized state to true
   };
+
   const handleExport = () => {
     if (containerrev.current) {
       html2canvas(containerrev.current)
         .then(canvas => {
+          // Convert the captured canvas to a Data URL representing a PNG image
           const imgData = canvas.toDataURL('image/png');
-          const link = document.createElement('a');
-          link.download = 'timeline.png';
-          link.href = imgData;
-          link.click();
+  
+          // Create a new image element to display the captured image
+          const img = new Image();
+          img.src = imgData;
+  
+          // Create a new window for preview
+          const imageWindow = window.open('');
+          
+          // Write HTML content to the new window
+          const content = `
+            <html>
+              <head>
+                <title>Timeline Preview</title>
+                <style>
+                  body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f0f0f0;
+                    padding: 20px;
+                  }
+                  .image-container {
+                    text-align: center;
+                    margin-bottom: 20px;
+                  }
+                  .image-container img {
+                    max-width: 100%;
+                    max-height: 80vh;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                  }
+                  .download-button {
+                    display: block;
+                    text-align: center;
+                    margin-top: 20px;
+                  }
+                  .download-button a {
+                    background-color: #bd055e;
+                    color: white;
+                    padding: 10px 20px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    transition: background-color 0.3s;
+                  }
+                  .download-button a:hover {
+                    background-color: ##bd055e;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class="image-container">
+                  <img src="${img.src}" alt="Timeline Image">
+                </div>
+                <div class="download-button">
+                  <a href="${imgData}" download="timeline.png">Download Image</a>
+                </div>
+              </body>
+            </html>
+          `;
+          
+          // Write the content to the preview window
+          imageWindow.document.write(content);
         })
         .catch(error => {
           console.error('Error exporting timeline:', error);
         });
     }
   };
-  console.log("maciii",projectId)
+  
+  
   useEffect(() => {
     const margin = { top: 20, right: 20, bottom: 50, left: 20 };
     const svgHeight = 1000; // Height of the SVG container
@@ -68,11 +127,9 @@ const Timemaxi = ({projectId}) => {
       .attr('width', width + margin.left + margin.right)
       .attr('height', svgHeight); // Set SVG height
 
-     console.log(projectId,"maxiii")
-      axios.get('http://localhost:8000/djapp/sprints/',{params:{projectid : projectId}}) 
+    axios.get('http://localhost:8000/djapp/sprints/', { params: { projectid: projectId } }) 
       .then(response => {
         const sprintData = response.data;
-        console.log('Sprint Data:', sprintData); 
         if (Array.isArray(sprintData.sprints)) { 
           drawGanttChart(svg, width, height, sprintData.sprints, monthRectHeight); 
         } else {
@@ -83,11 +140,9 @@ const Timemaxi = ({projectId}) => {
         console.error('Error fetching sprint data:', error);
       });
 
-   
     d3.select(containerRef.current)
       .style('overflow-x', 'auto')
       .style('width', '100%');
-
   }, []);
 
   const drawGanttChart = (svg, width, height, sprintData, monthRectHeight) => {
@@ -158,7 +213,6 @@ const Timemaxi = ({projectId}) => {
             .style('fill', 'none') // Remove background color
             .style('stroke', 'lightgrey') // Set border color (change to desired color)
             .style('stroke-width', 1) // Set border width (adjust as needed);
-            .style('font-size', '4px'); // Font size for potential text element
   
           d3.select(this)
             .append('text')
@@ -257,86 +311,88 @@ const Timemaxi = ({projectId}) => {
           .style('color', '#000') // Set text color
           .text(sprint.sprint);
   
-          const today = new Date();
-          const todayMonth = today.toLocaleString('default', { month: 'long' });
-          const todayDay = today.getDate();
-          const todayPosition = monthPositions[monthMap[todayMonth]].startDay + (todayDay - 1);
-          const todayXPosition = xScale(todayPosition) + (xScale(1) / 2);
+        const today = new Date();
+        const todayMonth = today.toLocaleString('default', { month: 'long' });
+        const todayDay = today.getDate();
+        const todayPosition = monthPositions[monthMap[todayMonth]].startDay + (todayDay - 1);
+        const todayXPosition = xScale(todayPosition) + (xScale(1) / 2);
   
-          const currentDaySVG = svg.append('line')
-            .attr('x1', todayXPosition)
-            .attr('y1', monthRectHeight + 40) // Adjusted y position to be below the month rectangles
-            .attr('x2', todayXPosition)
-            .attr('y2', height)
-            .attr('stroke', 'red')
-            .attr('stroke-width', 2)
-            .node(); // Get the DOM node of the current date SVG element
+        const currentDaySVG = svg.append('line')
+          .attr('x1', todayXPosition)
+          .attr('y1', monthRectHeight + 45) // Adjusted y position to be below the month rectangles
+          .attr('x2', todayXPosition)
+          .attr('y2', height)
+          .attr('stroke', 'red')
+          .attr('stroke-width', 2)
+          .node(); // Get the DOM node of the current date SVG element
   
-          const currentDayTextSVG = svg.append('text')
-            .attr('x', todayXPosition)
-            .attr('y', monthRectHeight - 10) // Adjusted y position to be below the line
-            .attr('text-anchor', 'middle')
-            .style('font-size', '12px')
-            .style('font-weight', 'bold')
-            .attr('fill', 'red')
-            .text("Current day")
-            .node();
+        const currentDayTextSVG = svg.append('text')
+          .attr('x', todayXPosition)
+          .attr('y', monthRectHeight + 38) // Adjusted y position to be below the line
+          .attr('text-anchor', 'middle')
+          .style('font-size', '11px')
+          .style('font-weight', 'bold')
+          .attr('fill', 'red')
+          .text("Current day")
+          .node();
   
-          currentDaySVG.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          currentDayTextSVG.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          window.addEventListener('click', (event) => {
-            const popupElement = document.querySelector('.popuptime');
-            if (popupElement && !popupElement.contains(event.target)) {
-              setPopup({ visible: false, x: 0, y: 0, sprint: null });
-            }
+                  currentDaySVG.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center', // Scroll to the top of the viewport
+            inline: 'center' // Scroll to the left of the viewport
           });
+          
+          currentDayTextSVG.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center', // Scroll to the top of the viewport
+            inline: 'center' // Scroll to the left of the viewport
+          });
+        window.addEventListener('click', (event) => {
+          const popupElement = document.querySelector('.popuptime');
+          if (popupElement && !popupElement.contains(event.target)) {
+            setPopup({ visible: false, x: 0, y: 0, sprint: null });
+          }
+        });
   
       }
     });
   };
-  
- 
+
   return (
     minimized ? (
-      <Timeline projectid={projectId} setMinimized={setMinimized} />
-    ) :
-    (<div ref={containerrev}>
-    <div ref={containerRef}>
-     
-      <div  className='colsprint'>
-      <button onClick={handleExport} className="export-button-maxi"> <PiExportBold /> Export</button>
-
-      <Cols projectId={projectId}/> 
-      
-     
+      <Timeline projectId={projectId} setMinimized={setMinimized} />
+    ) : (
+      <div ref={containerrev}>
+        <div className="forflex"ref={containerRef}>
+          <div className='colsprint'>
+            <TbArrowsMinimize className='mini' onClick={handleMinimizeClick} />
+            <button onClick={handleExport} className="export-button-maxi"> <PiExportBold /> Export  </button>
+            <Cols projectId={projectId}/> 
+          </div>
+          <div style={{ overflowX: 'auto', width: '100%', marginTop: '55px' }}>
+            <svg  ref={svgRef}></svg>
+            {popup.visible && (
+              <div className="popuptime centered-popup">
+                <div className="sprint-info">
+                  <p><strong>{popup.sprint.sprint}</strong></p>
+                  <p className={
+                    popup.sprint.status === 'start' ? 'future-sprint' :
+                    popup.sprint.status === 'complete' ? 'active-sprint' :
+                    'closed-sprint'
+                  }>
+                    {popup.sprint.status === 'start' && 'Future sprint'}
+                    {popup.sprint.status === 'complete' && 'Active sprint'}
+                    {popup.sprint.status === 'completed' && 'Closed sprint'}
+                  </p>
+                </div>
+                <p>Start Date: {formatDate(popup.sprint.start_date)}</p>
+                <p>End Date: {formatDate(popup.sprint.end_date)}</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-      <div style={{ overflowX: 'auto', width: '100%',marginLeft: '200px',marginTop:'55px' }}>
-        <svg ref={svgRef}  ></svg>
-        {popup.visible && (
-  <div
-    className="popuptime centered-popup"
-  >
-    <div className="sprint-info">
-    <p><strong>{popup.sprint.sprint}</strong></p>
-    <p className={
-        popup.sprint.status === 'start' ? 'future-sprint' :
-        popup.sprint.status === 'complete' ? 'active-sprint' :
-        'closed-sprint'
-    }>
-        {popup.sprint.status === 'start' && 'Future sprint'}
-        {popup.sprint.status === 'complete' && 'Active sprint'}
-        {popup.sprint.status === 'completed' && 'Closed sprint'}
-    </p>
-</div>
-<p>Start Date: {formatDate(popup.sprint.start_date)}</p>
-<p>End Date: {formatDate(popup.sprint.end_date)}</p>
-    
-  </div>
-)}
-
-      </div>
-    </div>
-    </div>)
+    )
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './css/colsprint.css';
+import './css/col_max.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import axios from 'axios';
 

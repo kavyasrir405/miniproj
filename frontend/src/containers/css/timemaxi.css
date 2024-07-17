@@ -7,21 +7,29 @@
   .export-button-maxi{
     position: relative;
     top: 36px;
-    background-color:#a8406a;
+    background-color:#ccc;
+    left: 60px;
      
-    color: white; 
-    padding: 8px 66px; /* Adjust padding as needed */
+    color: black;
+    padding: 7px 20px; /* Adjust padding as needed */
     border: none;
-    border-radius: 5px; /* Adjust border radius as needed */
+    border-radius: 3px; /* Adjust border radius as needed */
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
 
   }
   
   /* SVG styles */
   svg {
     font-family: Arial, sans-serif;
+   
   
+  }
+  .svgmaxi{
+  
+  }
+  .forflex{
+    display: flex;
   }
   
   /* Month label styles */
@@ -62,7 +70,7 @@
   
   .popuptime button {
     margin-top: 10px;
-    padding: 8px 12px;
+    padding: 4px 12px;
     background-color: #a8406a;
     color: white;
     border: none;
@@ -73,16 +81,17 @@
   .popuptime button:hover {
     background-color:  #a8406a;
   }
-  .colsprint{
-    position: absolute;
-    bottom: 405px;
-    
-
+  .colsprint {
+    position: relative; /* Change absolute to relative */
+    margin-top: 27px; 
   }
-  .mini-icon{
-    cursor: pointer;
-  }
-/* Add these styles to your CSS file */
+  
+ .mini{
+  position: relative;
+  top: 40px;
+  left: 20px;
+  z-index: 1;
+ }
 
 .future-sprint {
   color: blue;

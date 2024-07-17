@@ -131,8 +131,9 @@ def generate_invitation_token(request):
         else:
             invitation_link = f'http://localhost:3000/accept-invitation?projectid={projectid}&token={token}'
 
-            subject = "Join Project"
-            message = f"Welcome! You're invited to join the project with ID {projectid}. Click the link below to accept:\n{invitation_link}"
+            subject = "Welcome to Salty- Join Project"
+            message = f"Welcome! You're invited to join the project {project_ins.projectname}. \n Click the link to accept:\n{invitation_link}"
+            
             
             send_mail(subject, message, EMAIL_HOST_USER, [email], fail_silently=True)
             print("sent")
@@ -990,7 +991,7 @@ def fetch_assignee_color(request):
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
 
-   
+
 
 
 

@@ -13,23 +13,32 @@
   cursor: pointer;
   font-size: 16px;
   position: relative;
-  bottom: 20px;
-  left: 990px;
-}
+  left: 100px;
+  
 
+}
+.head-time{
+  display: flex;
+  margin-left: 500px;
+  /* border: 1px solid ; */
+  position: relative;
+  bottom: 30px;
+  width: 600px;
+  justify-content: space-around;
+}
 .maxi_icon {
   position: relative;
-  /* top: 35px; */
-  left: 970px;
-  bottom: 10px;
+  left: 180px;
   width: 20px;
   height: 30px;
   font-weight: bolder;
+  cursor: pointer;
 }
 .team-time{
-margin-left: 800px;
-position: relative;
-top: 20px;
+
+}
+.main-flex{
+  display: flex;
 }
 .export-button:hover {
   background-color: #dbddde; /* Change hover background color as needed */

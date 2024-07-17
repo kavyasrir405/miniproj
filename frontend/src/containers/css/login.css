@@ -154,4 +154,16 @@
   margin: 0;
   color: #ff347f;
 }
+#login-mess{
+  position: fixed;
+  top: 15%;
+  left: 38%;
+  color: #ff347f;
+  background-color: #fff;
+  padding: 7px 28px;
+  width: 300px;
+  border: 1px solid #ff347f;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 

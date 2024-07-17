@@ -39,17 +39,13 @@ export default function DisplayBacklog() {
     };
     const fetchData = async () => {
       try {
-        console.log("hellooooo inside fetchdattttttttta")
+       
         const response = await axios.get("http://localhost:8000/djapp/countsprints/", {
           params: { projectId: projectid }
         });
         const data = response.data;
-        console.log("inside before useEffect", isSprintDeleted);
         setisSprintDeleted(false);
-        console.log("inside useEffect", isSprintDeleted);
         setSprints(data.sprints); // Assign array of sprint objects to state variable
-        console.log("datadddd", data.sprints);
-        console.log("sprintss", sprints);
         if (data.sprints.length > 0) {
           const lastSprint = data.sprints[data.sprints.length - 1];
           const lastSprintNumber = parseInt(lastSprint.sprint.match(/Sprint (\d+)/)[1]);
@@ -80,8 +76,6 @@ export default function DisplayBacklog() {
            
             setissues(response.data)
             setIssueStatusChanged(false)
-            console.log("issuessswithoutttsprinttttt",response.data)
-            console.log(issues)
           } catch (error) {
             console.error("Error fetching data:", error);
           }
