@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { SiStorybook } from "react-icons/si";
 import { FaBug } from 'react-icons/fa';
 import { FaTasks } from "react-icons/fa";
-import DisplayIssueFiltersWithoutPop from "./DisplayIssueFiltersWithoutPop";
 import Sidebar from "../components/Sidebar";
 import AssigneeSelector from './AssigneeSelector';
 import './css/board.css'; // Importing the CSS file
@@ -86,7 +85,6 @@ const DraggableItem = ({ id, IssueName, status, projectid, IssueType, assignee, 
         <div className="popup-overlay" onClick={togglePopup}>
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
             <BoardsIssueDisplay data={item} />
-            
           </div>
         </div>
       )}
@@ -94,7 +92,7 @@ const DraggableItem = ({ id, IssueName, status, projectid, IssueType, assignee, 
   );
 };
 
-const DropZone = ({ id, items, setItems, onDrop, projectid, user, selectedSprint }) => {
+const DropZone = ({ id, items, setItems, onDrop, projectid, user, selectedSprint, setReload }) => {
   const [, drop] = useDrop({
     accept: 'ITEM',
     drop: () => ({ id }),
@@ -102,6 +100,73 @@ const DropZone = ({ id, items, setItems, onDrop, projectid, user, selectedSprint
       isOver: !!monitor.isOver(),
     }),
   });
+
+  const [showCreateIssue, setShowCreateIssue] = useState(false);
+  const [newIssueName, setNewIssueName] = useState('');
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (showCreateIssue) {
+      inputRef.current.focus();
+    }
+  }, [showCreateIssue]);
+
+  const handleCreateIssue = async () => {
+    const newIssue = {
+      IssueName: newIssueName,
+      IssueType: "Story",
+      projectId: projectid,
+      sprint: selectedSprint,
+      assigned_epic: null,
+    };
+
+    try {
+      await axios.post('http://localhost:8000/djapp/add/', newIssue);
+      setReload(prev => !prev); // Trigger reload
+    } catch (error) {
+      console.log("Error creating issue:", error);
+    }
+
+    setNewIssueName('');
+    setShowCreateIssue(false);
+  };
+
+  const handleCloseForm = () => {
+    setShowCreateIssue(false);
+    setNewIssueName('');
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      handleCloseForm();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  const handleClickOutside = (e) => {
+    if (inputRef.current && !inputRef.current.contains(e.target)) {
+      handleCloseForm();
+    }
+  };
+
+  useEffect(() => {
+    if (showCreateIssue) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showCreateIssue]);
 
   return (
     <div ref={drop} className={`boardDropZone boardDropZone${id}`}>
@@ -126,9 +191,29 @@ const DropZone = ({ id, items, setItems, onDrop, projectid, user, selectedSprint
       ) : (
         id === 1 && <div className="start-sprint-message">Start sprint to get started</div>
       )}
+
+      {showCreateIssue && (
+        <div className="create-issue-form" ref={inputRef}>
+          <input
+            type="text"
+            value={newIssueName}
+            onChange={(e) => setNewIssueName(e.target.value)}
+            placeholder="Enter issue name"
+          />
+          <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleCreateIssue(); }}>Create Issue</button>
+          <button onClick={handleCloseForm}>Cancel</button>
+        </div>
+      )}
+
+      { id === 1 && !showCreateIssue && (
+        <div className="create-issue-button" onClick={() => setShowCreateIssue(true)}>
+          + Create Issue
+        </div>
+      )}
     </div>
   );
 };
+
 
 const Board = ({ user }) => {
   const [selectedSprint, setSelectedSprint] = useState('');
@@ -205,7 +290,7 @@ const Board = ({ user }) => {
     try {
       await axios.post('http://localhost:8000/djapp/update_issueStatus/', { issue: IssueName, status: newStatus, projectId: projectid });
 
-      setReload((prev) => !prev); // Toggle the reload state to trigger re-render
+      setReload(prev => !prev); // Toggle the reload state to trigger re-render
     } catch (error) {
       console.error("Error updating item status:", error);
     }
@@ -224,7 +309,7 @@ const Board = ({ user }) => {
         setItems1([]);
         setItems2([]);
         setItems3([]);
-        setReload((prev) => !prev);
+        setReload(prev => !prev);
       }
     } else {
       alert("Please complete all issues before completing the sprint.");
@@ -255,9 +340,9 @@ const Board = ({ user }) => {
                 <button className="completebtn" onClick={handleSprintComplete}>Complete Sprint</button>
               </div>
               <div className="boardFlexContainer">
-                <DropZone id={1} items={items1} setItems={setItems1} onDrop={handleDrop} user={user} selectedSprint={selectedSprint} projectid={projectid} />
-                <DropZone id={2} items={items2} setItems={setItems2} onDrop={handleDrop} user={user} selectedSprint={selectedSprint} projectid={projectid} />
-                <DropZone id={3} items={items3} setItems={setItems3} onDrop={handleDrop} user={user} selectedSprint={selectedSprint} projectid={projectid} />
+                <DropZone id={1} items={items1} setItems={setItems1} onDrop={handleDrop} user={user} selectedSprint={selectedSprint} projectid={projectid} setReload={setReload} />
+                <DropZone id={2} items={items2} setItems={setItems2} onDrop={handleDrop} user={user} selectedSprint={selectedSprint} projectid={projectid} setReload={setReload} />
+                <DropZone id={3} items={items3} setItems={setItems3} onDrop={handleDrop} user={user} selectedSprint={selectedSprint} projectid={projectid} setReload={setReload} />
               </div>
             </div>
           </div>
@@ -272,5 +357,3 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps)(Board);
-
-

@@ -164,6 +164,7 @@ def verify_invitation_token(request):
             return JsonResponse({'error': 'Invalid token'}, status=400)
         
 @csrf_exempt
+
 def process_invitation_token(request):
     if request.method == 'POST':
         # Extract email, project ID, and invitation token from the request data
@@ -683,13 +684,14 @@ def updateSprintStatus(request):
     if request.method == 'GET':
         project_id = request.GET.get('projectId')
         sprint_name = request.GET.get('sprintName')
+        status=request.GET.get('status')
 
         try:
             project = Project.objects.get(projectid=project_id)
             sprint = Sprint.objects.get(sprint=sprint_name, project=project)
 
            
-            sprint.status = 'completed'
+            sprint.status =status
             sprint.save()
             return JsonResponse({"message": "Sprint status updated to completed"}, status=200)
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import './css/sprint.css';
+import Modal from './modal';
 import { FaPlus } from "react-icons/fa6";
 import IssueType from './issuseType';
 import { connect } from 'react-redux';
@@ -12,6 +13,7 @@ import { useDrag } from 'react-dnd';
 import { SiStorybook } from "react-icons/si";
 import { FaBug } from 'react-icons/fa';
 import { FaTasks } from "react-icons/fa";
+import BoardsIssueDisplay from './BoardsIssueDisplay';
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FaPencilAlt } from 'react-icons/fa';
 
@@ -19,15 +21,25 @@ const Backlog = ({ addIssue, issuesList = [], sprint_name, onissueTypeChange }) 
   const [showInputField, setShowInputField] = useState(false);
   const [selectedIssueType, setSelectedIssueType] = useState('Story');
   const { projectid } = useParams();
-  const inputContainerRef = useRef(null); // Creating a reference for the input container
+  const inputContainerRef = useRef(null);
+  const scrollRef = useRef(null); // New ref for scrolling
 
   const handleClickOutside = (event) => {
-    // Check if the click occurred outside the input container AND not on the input field itself
     if (inputContainerRef.current && !inputContainerRef.current.contains(event.target) && event.target.className !== "EnterIssue") {
       setShowInputField(false);
     }
   };
- 
+
+  useEffect(() => {
+    if (showInputField && scrollRef.current) {
+      const scrollElement = scrollRef.current;
+      const offset = 100; // Change this value to increase/decrease the scroll offset
+      window.scrollTo({
+        top: scrollElement.getBoundingClientRect().top + window.scrollY - offset,
+        behavior: 'smooth',
+      });
+    }
+  }, [showInputField]);
 
   useEffect(() => {
     if (showInputField) {
@@ -95,15 +107,14 @@ const Backlog = ({ addIssue, issuesList = [], sprint_name, onissueTypeChange }) 
           </button>
         )}
         {showInputField && (
-          <div className="issueCreation"  onClick={(e) => {e.preventDefault(); e.stopPropagation();}}>
-            <IssueType onSelect={setSelectedIssueType}  />
+          <div className="issueCreation" ref={scrollRef} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+            <IssueType onSelect={setSelectedIssueType} />
             <input
               type="text"
               className="EnterIssue"
               placeholder="Type your issue here"
               onKeyDown={handleKeyPress}
-              onClick={(e) => {e.preventDefault(); e.stopPropagation();}}
-           
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
             />
           </div>
         )}
@@ -111,6 +122,10 @@ const Backlog = ({ addIssue, issuesList = [], sprint_name, onissueTypeChange }) 
     </>
   );
 };
+
+
+
+
 
 
 
@@ -143,25 +158,29 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange }) => {
   const handleAssigneeSelect = async (assignee) => {
     setSelectedAssignee(assignee.email);
     const assigneeEmail = assignee.email;
-    console.log("hellloe",assignee)
+    console.log("hellloe", assignee)
     await axios.post('http://localhost:8000/djapp/update_issueassignee/', { issue: issue.IssueName, assignee: assigneeEmail, projectId: projectid });
-   
-   const response= await axios.post('http://localhost:8000/djapp/fetch_assignee_color/', {  assignee: assignee.email });
-   console.log("insideassigneeee",response.data.user.color)
-   console.log(response.data.user.first_letter)
-   setAssigneeColor(response.data.user.color);
+
+    const response = await axios.post('http://localhost:8000/djapp/fetch_assignee_color/', { assignee: assignee.email });
+    console.log("insideassigneeee", response.data.user.color)
+    console.log(response.data.user.first_letter)
+    setAssigneeColor(response.data.user.color);
     setAssigneeInitial(response.data.user.first_letter);
     setDropdownVisible(false);
-   
+
+  };
+  const [showPopup, setShowPopup] = useState(false);
+  const togglePopup = () => {
+    setShowPopup(!showPopup);
   };
 
- 
+
 
   useEffect(() => {
     const fetchTeamMembers = async () => {
       try {
         const teamMembersResponse = await axios.get(`http://localhost:8000/djapp/get_assignee/?projectid=${projectid}`);
-        console.log("teammmmmmmmmmmmm",teamMembersResponse.data.team_members)
+        console.log("teammmmmmmmmmmmm", teamMembersResponse.data.team_members)
         setAssigneeOptions(teamMembersResponse.data.team_members);
       } catch (error) {
         console.error('Error fetching team members and sprints:', error);
@@ -183,17 +202,18 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange }) => {
   }, [dropdownVisible]);
   useEffect(() => {
     const fetchcolor = async () => {
-      if (selectedAssignee){
-      try {
-        const response= await axios.post('http://localhost:8000/djapp/fetch_assignee_color/', {  assignee: selectedAssignee });
-   console.log("insideassigneeee",response.data.user.color)
-   console.log(response.data.user.first_letter)
-   setAssigneeColor(response.data.user.color);
-    setAssigneeInitial(response.data.user.first_letter);
-      } catch (error) {
-        console.error('Error fetching team members and sprints:', error);
-      }
-    };}
+      if (selectedAssignee) {
+        try {
+          const response = await axios.post('http://localhost:8000/djapp/fetch_assignee_color/', { assignee: selectedAssignee });
+          console.log("insideassigneeee", response.data.user.color)
+          console.log(response.data.user.first_letter)
+          setAssigneeColor(response.data.user.color);
+          setAssigneeInitial(response.data.user.first_letter);
+        } catch (error) {
+          console.error('Error fetching team members and sprints:', error);
+        }
+      };
+    }
     fetchcolor();
   }, []);
 
@@ -280,82 +300,93 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange }) => {
   };
 
   return (
-    <div className="input-item" ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
-  {isEditing ? (
-    <>
-      <input
-        type="text"
-        value={editedIssueName}
-        onChange={handleInputChange}
-        onBlur={handleInputBlur}
-        onKeyDown={handleInputKeyDown}
-        autoFocus
-      />
-      <div className="close">X</div>
-    </>
-  ) : (
-    <div className="issueType">
-      {getIssueIcon(issue.IssueType || 'Story')}
-      <div className={issue.status === 'Done' ? 'issue-done' : 'value'}>
-        {issue.IssueName}
-        <FaPencilAlt onClick={handleEditClick} className="edit-icon" />
-      </div>
-    </div>
-  )}
-  <div className="addEpic">
-    {selectedEpic ? (
-      <span className="selected-epic">{selectedEpic}</span>
-    ) : (
-      <>
-        
-        
-      </>
-    )}
-    {dropdownEpics && Epics.length > 0 && (
-      <div className="dropdown-menu">
-        {Epics.map((epic, index) => (
-          <div key={index} className="dropdown-item" onClick={() => handleSelectEpic(epic.EpicName)}>
-            {epic.EpicName}
+    <div className="input-item" ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }} onClick={togglePopup}>
+      <div className='left-part' >
+      {isEditing ? (
+        <>
+          <input
+            type="text"
+            value={editedIssueName}
+            onChange={handleInputChange}
+            onBlur={handleInputBlur}
+            onKeyDown={handleInputKeyDown}
+            autoFocus
+          />
+          <div className="close">X</div>
+        </>
+      ) : (
+        <div className="issueType">
+          {getIssueIcon(issue.IssueType || 'Story')}
+          <div className={issue.status === 'Done' ? 'issue-done' : 'value'}>
+            {issue.IssueName}
+            <FaPencilAlt onClick={handleEditClick} className="edit-icon" />
           </div>
-        ))}
-      </div>
-    )}
-  </div>
-  <div className="right-most">
-    <div className="right">
-      <IssueStatus issueName={issue} pid={projectid} onissueTypeChange={onissueTypeChange} />
-    </div>
-    <div className="right1">
-    <div className="assignee-container">
-  <div className="assignee" onClick={handleAssigneeClick}>
-    {selectedAssignee ? (
-      <div className="assignee-icon" id="userIcon" style={{ backgroundColor: assigneeColor }}>
-        {assigneeInitial}
-      </div>
-    ) : (
-      <FaUser />
-    )}
-  </div>
-        {dropdownVisible && assigneeOptions.length > 0 && (
-          <div className="usericon-dropdown">
-            {assigneeOptions.map((assignee, index) => (
-              <div
-                key={index}
-                className="usericon-dropdown-item"
-                onClick={() => handleAssigneeSelect(assignee)}
-              >
-                {`${assignee.first_name} ${assignee.last_name}`}
+        </div>
+      )}
+      <div className="addEpic">
+        {selectedEpic ? (
+          <span className="selected-epic">{selectedEpic}</span>
+        ) : (
+          <>
+
+
+          </>
+        )}
+        {dropdownEpics && Epics.length > 0 && (
+          <div className="dropdown-menu">
+            {Epics.map((epic, index) => (
+              <div key={index} className="dropdown-item" onClick={() => handleSelectEpic(epic.EpicName)}>
+                {epic.EpicName}
               </div>
             ))}
           </div>
         )}
       </div>
+      </div>
+      <div className="right-most"  onClick={(e) => e.stopPropagation()}>
+        <div className="right">
+          <IssueStatus issueName={issue} pid={projectid} onissueTypeChange={onissueTypeChange} />
+        </div>
+        <div className="right1">
+          <div className="assignee-container">
+            <div className="assignee" onClick={handleAssigneeClick}>
+              {selectedAssignee ? (
+                <div className="assignee-icon" id="userIcon" style={{ backgroundColor: assigneeColor }}>
+                  {assigneeInitial}
+                </div>
+              ) : (
+                <FaUser />
+              )}
+            </div>
+            {dropdownVisible && assigneeOptions.length > 0 && (
+              <div className="usericon-dropdown">
+                {assigneeOptions.map((assignee, index) => (
+                  <div
+                    key={index}
+                    className="usericon-dropdown-item"
+                    onClick={() => handleAssigneeSelect(assignee)}
+                  >
+                    {`${assignee.first_name} ${assignee.last_name}`}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <div id="deleteIssue" className="Dropdown" onClick={handleDeleteIssue}>
+          <FaRegTrashAlt />
+        </div>
+      </div>
+      {showPopup && (
+        <Modal onClose={togglePopup}>
+        <BoardsIssueDisplay data={issue} />
+      </Modal>
+            
+
+         
+        
+      )}
     </div>
-    <div id="deleteIssue" className="Dropdown" onClick={handleDeleteIssue}>
-      <FaRegTrashAlt />
-    </div>
-  </div>
-</div>
 
   );
 };

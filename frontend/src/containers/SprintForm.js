@@ -17,7 +17,7 @@ const SprintForm = ({ closeForm, sendDataToParent, initialFormData, closeDropDow
       end_date: '',
       sprint_goal: '',
       project: projectid,
-      status: 'complete',
+      status: action,
     }
   );
 
@@ -150,10 +150,10 @@ const SprintForm = ({ closeForm, sendDataToParent, initialFormData, closeDropDow
       await axios.post('http://localhost:8000/djapp/create_sprint/', formData);
       closeForm(false);
       sendDataToParent(formData);
-      if (action === 'start') {
-        setButtonType('complete');
-        navigate(`/project/${projectid}/boards?sprintName=${encodeURIComponent(sprintName)}`);
-      }
+      // if (action === 'start') {
+      //   setButtonType('complete');
+      //   navigate(`/project/${projectid}/boards?sprintName=${encodeURIComponent(sprintName)}`);
+      // }
       onSprintDelete(true);
     } catch (error) {
       console.error("Error submitting the form:", error);

@@ -11,7 +11,7 @@ import axios from 'axios';
 import { FaPencilAlt } from 'react-icons/fa';
 import { useDrop } from 'react-dnd';
 
-const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, onissueTypeChange }) => {
+const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, onissueTypeChange,toggleTrigger }) => {
   const { projectid } = useParams();
   const [action,setActions]=useState("");
   const [issues, setIssues] = useState([]);
@@ -28,6 +28,7 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
   const dropdownRef = useRef(null);
   const fetchIssues = async () => {
     try {
+      console.log("i am inside fecthIsuuessssss")
       const response = await axios.get("http://localhost:8000/djapp/issuesOfSprint/", {
         params: { projectId: projectid, sprintName: sprint.sprint }
       });
@@ -41,7 +42,7 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
   useEffect(() => {
    
     fetchIssues();
-  }, [projectid, issueStatusChanged]);
+  }, [projectid, issueStatusChanged,toggleTrigger]);
 
   const handleEditSprint = (action) => {
     setSelectedSprintData(sprint);
@@ -55,6 +56,10 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
     if (buttonType === 'start') {
       setActions('start')
       setButtonType('complete');
+      const response = await axios.get("http://localhost:8000/djapp/updateSprintStatus/", {
+        params: { projectId: projectid, sprintName: sprint.sprint,status:"complete" }
+      });
+      
       navigate(`/project/${projectid}/boards?sprintName=${encodeURIComponent(sprint.sprint)}`);
     } else {
       const allIssuesDone = issues.every(issue => issue.status === 'Done');
@@ -62,7 +67,7 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
         const confirmComplete = window.confirm("This sprint is completed. Well done! Do you want to complete it?");
         if (confirmComplete) {
           const response = await axios.get("http://localhost:8000/djapp/updateSprintStatus/", {
-            params: { projectId: projectid, sprintName: sprint.sprint }
+            params: { projectId: projectid, sprintName: sprint.sprint,status:"completed" }
           });
           onSprintDelete(true);
         }
@@ -91,7 +96,7 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
         await axios.get("http://localhost:8000/djapp/delete_sprint/", {
           params: { projectId: projectid, sprintName: sprint.sprint }
         });
-       
+        onissueTypeChange(true);
         fetchData()
        
       } catch (error) {
@@ -108,10 +113,15 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
     drop: async (item) => {
       setIssues((prevIssues) => [...prevIssues, item.issue]);
       await axios.post('http://localhost:8000/djapp/update_issueSprint/', { issue: item.issue.IssueName, sprint: sprint.sprint, projectId: projectid });
+     
+
       onissueTypeChange(true);
-      setissueDragged(true);
-      fetchIssues();
-      fetchData();
+      toggleTrigger();
+      // setIssueStatusChanged(true);
+      // setissueDragged(true);
+      // fetchIssues();
+      
+      
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
@@ -204,7 +214,7 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
             )}
           </div>
         </div>
-        {backlogsListOpen && <Backlog issuesList={issues} sprint_name={sprint.sprint} onissueTypeChange={setIssueStatusChanged} />}
+        {backlogsListOpen && <Backlog issuesList={issues} sprint_name={sprint.sprint} onissueTypeChange={setIssueStatusChanged}  />}
       </div>
     </div>
   );

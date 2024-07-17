@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export default function IssueStatus({ issueName ,pid,onissueTypeChange}) {
   const [selectedStatus, setSelectedStatus] = useState(issueName.status);
-console.log("issuestaus",issueName)
+
   const handleStatusChange = async (event) => {
     const newStatus = event.target.value;
     setSelectedStatus(newStatus);

@@ -17,6 +17,7 @@ import ProjectPage from "./ProjectPage";
 export default function DisplayBacklog() {
    
     const {projectid}=useParams()
+    const [renderFlag, setRenderFlag] = useState(false);
     const [sprints, setSprints] = useState([]);
     const [issues, setissues] = useState([]);
     const [formOpen, setFormOpen] = useState(false);
@@ -26,8 +27,11 @@ export default function DisplayBacklog() {
     const [backlogsListOpen, setBacklogsListOpen] = useState(true);
     const[isSprintDeleted,setisSprintDeleted]=useState(false)
     const[issueDragged,setissueDragged]=useState(false)
-    const [issueStatusChanged, setIssueStatusChanged] = useState(false);
-   
+    const [issueStatusChanged, setIssueChanged] = useState(false);
+    const toggleTrigger = () => {
+      console.log("changingggggggggggg")
+      setRenderFlag(!renderFlag);
+    };
 
     const openForm = () => {
       setFormOpen(true);
@@ -44,9 +48,10 @@ export default function DisplayBacklog() {
           params: { projectId: projectid }
         });
         const data = response.data;
-        console.log("inside before useEffect", isSprintDeleted);
+      
         setisSprintDeleted(false);
-        console.log("inside useEffect", isSprintDeleted);
+        
+       
         setSprints(data.sprints); // Assign array of sprint objects to state variable
         console.log("datadddd", data.sprints);
         console.log("sprintss", sprints);
@@ -66,7 +71,7 @@ export default function DisplayBacklog() {
    
     useEffect(() => {
       fetchData();
-    }, [deletedSprint, sprintCount, isSprintDeleted]);
+    }, [deletedSprint, sprintCount, isSprintDeleted,renderFlag]);
    
     useEffect(() => {
         const fetchIssues = async () => {
@@ -79,9 +84,10 @@ export default function DisplayBacklog() {
             );
            
             setissues(response.data)
-            setIssueStatusChanged(false)
+            setIssueChanged(false)
             console.log("issuessswithoutttsprinttttt",response.data)
             console.log(issues)
+           
           } catch (error) {
             console.error("Error fetching data:", error);
           }
@@ -132,7 +138,7 @@ export default function DisplayBacklog() {
 
     }
     {sprints.filter(sprint => sprint.status !== 'completed').map((sprint, index) => (
-    <Sprint key={index} sprint={sprint}  fetchData={fetchData} onSprintDelete={setisSprintDeleted} setissueDragged={setissueDragged}  onissueTypeChange={setIssueStatusChanged} />
+    <Sprint key={index} sprint={sprint}  fetchData={fetchData} onSprintDelete={setisSprintDeleted} setissueDragged={setissueDragged}  onissueTypeChange={setIssueChanged}  toggleTrigger={toggleTrigger}/>
 ))}
     </div>
     </div>
@@ -154,7 +160,7 @@ export default function DisplayBacklog() {
      
        </div>
        
-       {backlogsListOpen && <Backlog issuesList={issues} sprint_name={null}  onSprintDelete={setisSprintDeleted}  onissueTypeChange={setIssueStatusChanged}/>}
+       {backlogsListOpen && <Backlog issuesList={issues} sprint_name={null}  onSprintDelete={setisSprintDeleted}  onissueTypeChange={setIssueChanged}/>}
      
       </div>
      

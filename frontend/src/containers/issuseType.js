@@ -8,6 +8,8 @@ const IssueType = ({ onSelect }) => {
   const [isOptionsVisible, setIsOptionsVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Story');
   const containerRef = useRef(null);
+  const optionsRef = useRef(null);
+  
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -21,6 +23,18 @@ const IssueType = ({ onSelect }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (isOptionsVisible) {
+      const optionsRect = optionsRef.current.getBoundingClientRect();
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const isNotFullyVisible = optionsRect.bottom > window.innerHeight || optionsRect.top < 0;
+
+      if (isNotFullyVisible) {
+        optionsRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    }
+  }, [isOptionsVisible]);
 
   const toggleOptions = () => {
     setIsOptionsVisible(!isOptionsVisible);
@@ -42,7 +56,7 @@ const IssueType = ({ onSelect }) => {
         <span className="arrow">{isOptionsVisible ? '▲' : '▼'}</span>
       </div>
       {isOptionsVisible && (
-        <div className="options-div">
+        <div className="options-div" ref={optionsRef}>
           <div className="option" onClick={(e) => handleOptionClick(e, 'Story')}>
             <SiStorybook />
             <span>Story</span>
@@ -62,4 +76,3 @@ const IssueType = ({ onSelect }) => {
 };
 
 export default IssueType;
-
