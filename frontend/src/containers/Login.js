@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, Navigate,useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { login } from '../actions/auth';
 import axios from 'axios';
@@ -12,37 +12,63 @@ const Login = ({ login, isAuthenticated }) => {
     });
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-  
-  const projectId = searchParams.get('projectid');
-    const [message, setMessage] = useState({ type: null, text: '' });
-console.log(projectId)
+    const projectId = searchParams.get('projectid');
+    const initialMessage = searchParams.get('message');
+    const [message, setMessage] = useState({ type: null, text: initialMessage || '' });
+
     const { email, password } = formData;
 
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const onSubmit = async e => {
         e.preventDefault();
-
+    
         const error = await login(email, password);
-        if (projectId!=null){
-        const res = await axios.post('http://localhost:8000/djapp/process_invitation_token/', { email: email, projectid:projectId});
+    
+        if (projectId != null) {
+            try {
+                await axios.post('http://localhost:8000/djapp/process_invitation_token/', { email: email, projectid: projectId });
+            } catch (err) {
+                if (err.response && err.response.status === 404) {
+                    setMessage({ type: 'error', text: 'Invitation token processing endpoint not found.' });
+                } else {
+                    setMessage({ type: 'error', text: 'An error occurred while processing the invitation token.' });
+                }
+                setTimeout(() => {
+                    setMessage({ type: null, text: '' });
+                }, 3000);
+            }
         }
-        
-
-
+    
         if (error) {
             setMessage({ type: 'error', text: error });
+            setTimeout(() => {
+                setMessage({ type: null, text: '' });
+            }, 3000); // Clear message after 3 seconds
         }
     };
-
+    
     const continueWithGoogle = async () => {
         try {
             const res = await axios.get(`${process.env.REACT_APP_API_URL}/auth/o/google-oauth2/?redirect_uri=http://localhost:8000`);
             window.location.replace(res.data.authorization_url);
         } catch (err) {
             setMessage({ type: 'error', text: 'Google login failed, please try again.' });
+            setTimeout(() => {
+                setMessage({ type: null, text: '' });
+            }, 3000); // Clear message after 3 seconds
         }
     };
+
+    useEffect(() => {
+        let timeout;
+        if (message.text !== '') {
+            timeout = setTimeout(() => {
+                setMessage({ type: null, text: '' });
+            }, 3000);
+        }
+        return () => clearTimeout(timeout);
+    }, [message]);
 
     if (isAuthenticated) {
         return <Navigate to='/project' />;
@@ -51,8 +77,8 @@ console.log(projectId)
     return (
         <div className='login-page'>
             <div className='login-container'>
-                {message && (
-                    <div className={`message ${message.type}`}>
+                {message.text && (
+                    <div id="login-mess" className={`message ${message.type}`}>
                         {message.text}
                     </div>
                 )}
@@ -87,7 +113,6 @@ console.log(projectId)
                     </p>
                     <button className='login-btn login-btn-primary' type='submit'>Sign In</button>
                 </form>
-                
             </div>
         </div>
     );
@@ -98,4 +123,3 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, { login })(Login);
-

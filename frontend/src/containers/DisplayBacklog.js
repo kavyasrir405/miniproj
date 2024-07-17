@@ -66,6 +66,36 @@ export default function DisplayBacklog() {
     const fetchIssues = async () => {
 
       try {
+
+        const response = await axios.get("http://localhost:8000/djapp/countsprints/", {
+          params: { projectId: projectid }
+        });
+        const data = response.data;
+        setisSprintDeleted(false);
+        setSprints(data.sprints); // Assign array of sprint objects to state variable
+        if (data.sprints.length > 0) {
+          const lastSprint = data.sprints[data.sprints.length - 1];
+          const lastSprintNumber = parseInt(lastSprint.sprint.match(/Sprint (\d+)/)[1]);
+          setSprintCount(lastSprintNumber);
+        } else {
+
+          setSprintCount(0);
+
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, [deletedSprint, sprintCount, isSprintDeleted]);
+
+  useEffect(() => {
+    const fetchIssues = async () => {
+
+      try {
         const response = await axios.get("http://localhost:8000/djapp/issues/",
           {
             params: { projectId: projectid }
@@ -74,7 +104,6 @@ export default function DisplayBacklog() {
 
         setissues(response.data)
         setIssueStatusChanged(false)
-        console.log(issues)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -95,6 +124,8 @@ export default function DisplayBacklog() {
   const toggleBacklogsList = () => {
     setBacklogsListOpen(!backlogsListOpen);
   };
+
+
   return (
     <><Sidebar />
 

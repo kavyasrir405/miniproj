@@ -260,28 +260,41 @@ export const logout = () => dispatch => {
 };
 
 
-export const login = (email, password) => async dispatch => {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
-       
-            const body = JSON.stringify({ email, password });
-       
-            try {
-                const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/jwt/create/`, body, config);
-       
-                dispatch({
-                    type: LOGIN_SUCCESS,
-                    payload: res.data
-                });
-       
-                dispatch(load_user());
-            } catch (err) {
-                dispatch({
-                    type: LOGIN_FAIL
-                })
-            }
-        };
 
+export const login = (email, password) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    const body = JSON.stringify({ email, password });
+
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/jwt/create/`, body, config);
+        dispatch({
+            type: LOGIN_SUCCESS,
+            payload: res.data
+        });
+        dispatch(load_user());
+        return null; 
+    } catch (err) {
+        const errorResponse = err.response.data;
+        console.log(errorResponse)
+        let errorMessage = 'Login failed. Please try again.';
+
+        if (errorResponse.detail === 'Invalid password.') {
+            errorMessage = 'Invalid password.';
+        } else if (errorResponse.detail === 'User account not found.') {
+            errorMessage = 'User not found. Register to login';
+        } else if (errorResponse.detail === 'No active account found with the given credentials') {
+            errorMessage = 'Invalid Credentials';
+        }
+
+        dispatch({
+            type: LOGIN_FAIL
+        });
+
+        return errorMessage;
+    }
+};

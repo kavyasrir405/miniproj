@@ -7,12 +7,13 @@
   .monthlabel {
     padding-top: 14px;
     text-align: center;
-    border-bottom: 1px solid rgb(255, 255, 255);
+    border-bottom: 1px solid rgb(255, 255, 255); 
     width: 200px;
     height: 40px;
     background-color: #eae9e9;
   }
   .sprintlabel{
+    
     height: 45px;
     background-color:#eae9e9;
     text-align: center;
@@ -31,7 +32,7 @@
   #righticon{
     position: relative;
     top: 15px;
-    right: 80px;
+   right: 80px;
     font-size: 13px;
   }
   

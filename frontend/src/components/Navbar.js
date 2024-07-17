@@ -1,6 +1,5 @@
-// Navbar.js
 import React, { Fragment, useState, useEffect, useRef } from 'react';
-import { Link, useNavigate,Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logout } from '../actions/auth';
 import { GoPersonFill } from "react-icons/go";
@@ -16,14 +15,6 @@ const Navbar = ({ logout, isAuthenticated, user }) => {
     const navigate = useNavigate();
     const { projectid } = useParams();
     const [formOpen, setFormOpen] = useState(false);
-
-    const openForm = () => {
-        setFormOpen(true);
-    };
-
-    const closeForm = () => {
-        setFormOpen(false);
-    };
 
     useEffect(() => {
         if (user) {
@@ -62,7 +53,7 @@ const Navbar = ({ logout, isAuthenticated, user }) => {
 
     const logoutUser = () => {
         logout();
-        navigate('/'); // Programmatically navigate to the login page
+        navigate('/'); 
     };
 
     const guestLinks = () => (
@@ -90,8 +81,6 @@ const Navbar = ({ logout, isAuthenticated, user }) => {
         </Fragment>
     );
 
-
-
     const openProfile = () => {
         navigate(`/project/${projectid}/profile`);
     };
@@ -100,8 +89,16 @@ const Navbar = ({ logout, isAuthenticated, user }) => {
         navigate(`/project/${projectid}/filters`);
     };
 
-    const navtoproject = () => {
-        navigate("/project");
+    const openViewAllProjects = () => {
+        navigate('/project'); 
+    };
+
+    const openForm = () => {
+        setFormOpen(true);
+    };
+
+    const closeForm = () => {
+        setFormOpen(false);
     };
 
     return (
@@ -120,22 +117,18 @@ const Navbar = ({ logout, isAuthenticated, user }) => {
                                         <Link to={`/project/${project.projectid}/backlog`} className='dropdown-item'>{project.projectname}</Link>
                                     </li>
                                 ))}
-                            <li className='dropdown-item'onClick={navtoproject} >
-                                        View Projects
-                                    </li>
-                                 
+                                <li>
+                                    <a href='#!' onClick={openViewAllProjects} className='dropdown-item'>View All Projects</a>
+                                </li>
                             </ul>
                         )}
                     </li>
-                   
 
                     {isAuthenticated ? authLinks() : guestLinks()}
-                
 
-                {isAuthenticated && (
+                    {isAuthenticated && (
                         <Fragment>
-                                <button className='nav-button-create' onClick={openForm}>Create Issue</button>
-                           
+                            <button className='nav-button-create' onClick={openForm}>Create Issue</button>
                         </Fragment>
                     )}
 
@@ -147,14 +140,24 @@ const Navbar = ({ logout, isAuthenticated, user }) => {
                             </div>
                         </div>
                     )}
-</ul>
-                {isAuthenticated && (
-                    
-                        <li className='nav-items'>
+                </ul>
+
+                {isAuthenticated && user && (
+                    <ul className='nav-list'>
+                        <li className='nav-item'>
+                            <p className='admin_user'>{user.is_admin ? 'Admin' : 'User'}</p>
+                        </li>
+                    </ul>
+                )}
+
+                {isAuthenticated && user && (
+                    <ul className='nav-list'>
+                        <li className='nav-item'>
                             <button onClick={openProfile} className='person'><GoPersonFill /></button>
                         </li>
-                    
+                    </ul>
                 )}
+
             </nav>
         </Fragment>
     );
@@ -166,4 +169,3 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, { logout })(Navbar);
-

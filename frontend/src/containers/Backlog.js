@@ -143,12 +143,9 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange }) => {
   const handleAssigneeSelect = async (assignee) => {
     setSelectedAssignee(assignee.email);
     const assigneeEmail = assignee.email;
-    console.log("hellloe",assignee)
     await axios.post('http://localhost:8000/djapp/update_issueassignee/', { issue: issue.IssueName, assignee: assigneeEmail, projectId: projectid });
    
    const response= await axios.post('http://localhost:8000/djapp/fetch_assignee_color/', {  assignee: assignee.email });
-   console.log("insideassigneeee",response.data.user.color)
-   console.log(response.data.user.first_letter)
    setAssigneeColor(response.data.user.color);
     setAssigneeInitial(response.data.user.first_letter);
     setDropdownVisible(false);
@@ -161,7 +158,6 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange }) => {
     const fetchTeamMembers = async () => {
       try {
         const teamMembersResponse = await axios.get(`http://localhost:8000/djapp/get_assignee/?projectid=${projectid}`);
-        console.log("teammmmmmmmmmmmm",teamMembersResponse.data.team_members)
         setAssigneeOptions(teamMembersResponse.data.team_members);
       } catch (error) {
         console.error('Error fetching team members and sprints:', error);
@@ -186,8 +182,6 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange }) => {
       if (selectedAssignee){
       try {
         const response= await axios.post('http://localhost:8000/djapp/fetch_assignee_color/', {  assignee: selectedAssignee });
-   console.log("insideassigneeee",response.data.user.color)
-   console.log(response.data.user.first_letter)
    setAssigneeColor(response.data.user.color);
     setAssigneeInitial(response.data.user.first_letter);
       } catch (error) {
