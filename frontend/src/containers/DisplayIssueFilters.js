@@ -97,11 +97,12 @@ const DisplayIssueFilters = ({ data, user }) => {
     fetchProjects();
   }, [user.email]);
 
+  console.log("from without pop", issue);
   return (
     <div className='display-issue-main-container'>
       {issue ? (
         <div className="display-issue-card">
-          <h1 className="display-issue-title">{issue.IssueName || '----'}</h1>
+          <h1 className="display-issue-title">{issue.IssueName ||issue.EpicName || '----'}</h1>
           {/* <p>
             <strong>Assigned by:</strong> {issue.assigned_by || '----'}
           </p> */}
@@ -132,9 +133,9 @@ const DisplayIssueFilters = ({ data, user }) => {
             {isEditing ? (
               <select className="display-issue-select" name="status" value={issue.status} onChange={handleChange}>
                 <option value="">Select...</option>
-                <option value="to_do">To Do</option>
-                <option value="in_progress">In Progress</option>
-                <option value="done">Done</option>
+                <option value="To-Do">To Do</option>
+                <option value="In-Progress">In Progress</option>
+                <option value="Done">Done</option>
               </select>
             ) : (
               issue.status || '----'

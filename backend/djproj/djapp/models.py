@@ -140,3 +140,7 @@ class Comments(models.Model):
     CreatedAt = models.DateTimeField(default=timezone.now)
     EditedAt = models.DateTimeField(default=timezone.now)
     CommentBody = models.TextField(max_length=300, default='')
+
+class UploadedFile(models.Model):
+    file = models.FileField(upload_to='uploads/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)

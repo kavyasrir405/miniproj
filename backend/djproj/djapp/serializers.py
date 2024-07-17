@@ -16,3 +16,8 @@ class SprintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sprint
         fields = ['sprint',"sprintName", 'start_date', 'end_date', 'sprint_goal', 'project','status']
+
+class UploadedFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UploadedFile
+        fields = '__all__'

@@ -42,4 +42,6 @@ urlpatterns = [
     path('get_user_profile/', get_user_profile, name='get_user_profile'),
     path('get_assignee/', get_assignee, name='get_assignee'),
     path('update_user_profile/',update_user_profile, name = 'update_user_profile'),
+    path('upload/', FileUploadView.as_view(), name='file-upload'),
+
 ]

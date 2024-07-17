@@ -35,19 +35,7 @@
   overflow-y: auto;
 }
 
-.issue-card {
-  border: 1px solid #ddd;
-  background-color: #e0dfdf;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
 
-.issue-card:hover {
-  background-color: #f0f0f0;
-}
 
 .nothing-displayed {
   text-align: center;
@@ -74,7 +62,7 @@
   outline: none;
 }
 
-/* Enhanced DisplayIssueFilters styling */
+/* Enhanced DisplayIssueFilters styling
 .issue-card h1 {
   font-size: 24px;
   margin-bottom: 20px;
@@ -113,7 +101,7 @@
 
 .issue-card a:hover {
   text-decoration: underline;
-}
+} */
 
 .buttons {
   margin-top: 1rem;
@@ -197,40 +185,15 @@
 }
 
 .details-myissues {
-  display: flex;
-  flex: 1;
-  align-items: center;
-}
-
-.issue-card-horizontal-myissues .details-myissues span {
-  flex: 1;
-  font-weight: bold;
-  text-align: left; /* Align text to the left */
-  padding-left: 10px; /* Add left padding for spacing */
-}
-
-.issue-card-horizontal-myissues .details-myissues .description {
-  flex: 3;
-}
-
-.issue-card-horizontal-myissues .issue-type {
-  flex: 1; /* Flex 1 for equal spacing */
-}
-
-.issue-card-horizontal-myissues .issue-name {
-  flex: 2; /* Flex 2 for more space */
-}
-
-.issue-card-horizontal-myissues .description {
-  flex: 3; /* Flex 3 for even more space */
-}
-
-.issue-card-horizontal-myissues .assigned-by,
-.issue-card-horizontal-myissues .status,
-.issue-card-horizontal-myissues .assignee,
-.issue-card-horizontal-myissues .priority {
-  flex: 1; /* Flex 1 for equal spacing */
-  text-align: center; /* Center align text */
+  width: 100vw;
+  margin-left: 2rem;
+  margin-top: 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr 4fr 2fr 1fr 1fr 1fr; /* Same as details-h */
+  gap: 1rem; /* Space between grid items */
+  align-items: center; /* Align items vertically in the center */
+  padding-left: 1rem;
+  /* border-radius: 5px; Add border-radius for rounded corners */
 }
 
 /* Popup styling */
@@ -284,6 +247,37 @@
   margin-top: 20px; /* Space above the comment section */
   border-top: 1px solid #ccc; /* Border to separate from above content */
   padding-top: 10px;
+}
+
+.issue-card {
+  padding: 0.5rem; /* Reduced padding */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 0.5rem; /* Reduced margin */
+  cursor: pointer;
+  transition: box-shadow 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.issue-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.issue-header {
+  display: flex;
+  align-items: center;
+}
+
+.issue-header h3 {
+  margin: 0 0 0 0.5rem; /* Space between icon and title */
+  font-size: 1rem; /* Adjust font size as needed */
+}
+
+.issue-icon {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem; /* Adjust the size of the icons as needed */
 }
 
 

@@ -45,6 +45,7 @@ const IssueForm = ({ onClose, user }) => {
       };
 
       if (issueType !== "Epic") {
+        console.log(attachment);
         await axios.post('http://localhost:8000/djapp/create_issue/', data);
       } else {
         data.StartDate = new Date(startDate).toISOString().split('T')[0];
@@ -95,7 +96,6 @@ const IssueForm = ({ onClose, user }) => {
         if (!selectedProject) return;
         const response = await axios.get(`http://localhost:8000/djapp/get_epics/?projectid=${selectedProject}`);
         setEpics(response.data.epics_in_project);
-        console.log(response)
       } catch (error) {
         console.error('Error fetching epics:', error);
       }
@@ -160,6 +160,13 @@ const IssueForm = ({ onClose, user }) => {
           </div>
         )}
         <div>
+          <label>Summary:</label>
+          <textarea
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+          />
+        </div>
+        <div>
           <label>Priority:</label>
           <select value={priority} onChange={(e) => setPriority(e.target.value)}>
             <option value="">Select...</option>
@@ -215,13 +222,7 @@ const IssueForm = ({ onClose, user }) => {
             </select>
           </div>
         )}
-        <div>
-          <label>Summary:</label>
-          <textarea
-            value={summary}
-            onChange={(e) => setSummary(e.target.value)}
-          />
-        </div>
+        
         <div>
           <label>Assignee:</label>
           <select value={assignee} onChange={(e) => setAssignee(e.target.value)}>

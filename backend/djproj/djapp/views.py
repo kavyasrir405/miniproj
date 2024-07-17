@@ -20,6 +20,7 @@ from django.views.decorators.http import require_POST
 from social_django.models import UserSocialAuth
 from django.core.exceptions import ObjectDoesNotExist
 import random
+from rest_framework.parsers import MultiPartParser, FormParser
 
 @csrf_exempt 
 def ReactViews(request):
@@ -288,6 +289,7 @@ def create_issue(request):
     if request.method == 'POST':
         print("im inside post")
         data = json.loads(request.body)
+        print(data.get('Attachment'))
         pid1 = Project.objects.get(projectid=data.get('ProjectId'))
         if data.get('Sprint') != "":
             sprint = Sprint.objects.get(sprint=data.get('Sprint'))
@@ -729,21 +731,6 @@ def update_issueSprint(request):
             return JsonResponse({"message": "Invalid JSON format in request body"}, status=400)
     else:
         return JsonResponse({"message": "Only POST requests are allowed"}, status=405)
-# @csrf_exempt
-# def get_epics(request):
-#     if request.method == 'GET':
-#         project_id = request.GET.get('projectid')
-        
-#         pid1 = Project.objects.get(projectid=project_id)
-#         if project_id:
-#             epics = Epic.objects.filter(projectId=pid1).values('EpicName')
-#             epic_list = list(epics)
-#             print("epic listtttt",epic_list)
-#             return JsonResponse({'epic_in_project': epic_list})
-#         else:
-#             return JsonResponse({'error': 'Project ID is required'}, status=400)
-#     else:
-#         return JsonResponse({'error': 'Method not allowed'}, status=405)
     
 @csrf_exempt
 def update_issue_name(request):
@@ -1019,7 +1006,20 @@ def fetch_assignee_color(request):
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
 
-   
+
+
+class FileUploadView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        files = request.FILES.getlist('files')
+        file_objs = []
+        for file in files:
+            file_obj = UploadedFile(file=file)
+            file_obj.save()
+            file_objs.append(file_obj)
+        return Response(status=status.HTTP_201_CREATED)
+  
 
 
 

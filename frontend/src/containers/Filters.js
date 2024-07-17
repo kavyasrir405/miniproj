@@ -39,7 +39,7 @@ const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
             currentUser: currentUser
           }
         });
-        console.log(response.data);
+        
         setData(response.data);
       } catch (error) {
         console.error("There was an error fetching the data!", error);
@@ -85,9 +85,9 @@ const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
           <div>
             <select value={statusFilter} className='project-dropdown-status' onChange={(e) => setStatusFilter(e.target.value)}>
               <option value="">Select Status</option>
-              <option value="to_do">To Do</option>
-              <option value="in_progress">In Progress</option>
-              <option value="done">Done</option>
+              <option value="To-Do">To Do</option>
+              <option value="In-Progress">In Progress</option>
+              <option value="Done">Done</option>
             </select>
           </div>
         )}
@@ -122,7 +122,7 @@ const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
         ) : (
           <div>
             <div className="issue-card-horizontal-myissues">
-              <div className="details-myissues">
+              <div className="details-myissues" >
                 <span className="issue-type">Type</span>
                 <span className="issue-name">Name</span>
                 <span className="description">Summary</span>
