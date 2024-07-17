@@ -274,7 +274,7 @@ console.log(projectId,"timeline")
 
         const currentDaySVG = svg.append('line')
           .attr('x1', todayXPosition)
-          .attr('y1', monthRectHeight + 40) // Adjusted y position to be below the month rectangles
+          .attr('y1', monthRectHeight + 45) // Adjusted y position to be below the month rectangles
           .attr('x2', todayXPosition)
           .attr('y2', height)
           .attr('stroke', 'red')
@@ -283,16 +283,27 @@ console.log(projectId,"timeline")
 
         const currentDayTextSVG = svg.append('text')
           .attr('x', todayXPosition)
-          .attr('y', monthRectHeight - 10) // Adjusted y position to be below the line
+          .attr('y', monthRectHeight +38) // Adjusted y position to be below the line
           .attr('text-anchor', 'middle')
-          .style('font-size', '12px')
+          .style('font-size', '11px')
           .style('font-weight', 'bold')
           .attr('fill', 'red')
           .text("Current day")
           .node();
 
-        currentDaySVG.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        currentDayTextSVG.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          currentDaySVG.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center', // Scroll to the top of the viewport
+            inline: 'center' // Scroll to the left of the viewport
+          });
+          
+          currentDayTextSVG.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center', // Scroll to the top of the viewport
+            inline: 'center' // Scroll to the left of the viewport
+          });
+          
+          
         
         window.addEventListener('click', (event) => {
           const popupElement = document.querySelector('.popuptime');
@@ -315,15 +326,20 @@ console.log(projectId,"timeline")
         <div ref={containerrev}>
           <Sidebar />
           <h1 className='timeline-h1'>Timeline</h1>
+          <div className='head-time'>
           <div className='team-time'><ProjectPage/></div>
-          <div ref={containerRef}>
+          <CgMaximizeAlt className="maxi_icon" onClick={handleMaximizeClick} />
+          <button className="export-button" onClick={handleMaximizeClick}><PiExportBold /> Export </button>
+          </div>
+
+
+          <div className="main-flex"ref={containerRef}>
             
             <div className='colsprintmax'>
-              <CgMaximizeAlt className="maxi_icon" onClick={handleMaximizeClick} />
-              <button className="export-button" onClick={handleMaximizeClick}><PiExportBold /> Export </button>
+             
               <Colsprint projectId={projectId} />
             </div>
-            <div style={{ overflowX: 'auto', width: '80%', marginLeft: '320px', marginTop: '48px' }}>
+            <div style={{ overflowX: 'auto', width: '80%', marginLeft: '320px' }}>
               <svg ref={svgRef}></svg>
               {popup.visible && (
   <div

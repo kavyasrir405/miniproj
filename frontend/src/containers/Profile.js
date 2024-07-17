@@ -101,7 +101,6 @@ const Profile = ({ user }) => {
 
   return (
     <>
-      <Sidebar />
       <div className="profile-container">
         {/* <div className='profile-photo'>
           <span className='circle' style={{ backgroundColor: profileData.color, borderRadius: '50%', height:'7rem',width:'7rem' }}>

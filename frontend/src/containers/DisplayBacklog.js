@@ -43,7 +43,7 @@ export default function DisplayBacklog() {
     };
     const fetchData = async () => {
       try {
-        console.log("hellooooo inside fetchdattttttttta")
+       
         const response = await axios.get("http://localhost:8000/djapp/countsprints/", {
           params: { projectId: projectid }
         });
@@ -53,8 +53,6 @@ export default function DisplayBacklog() {
         
        
         setSprints(data.sprints); // Assign array of sprint objects to state variable
-        console.log("datadddd", data.sprints);
-        console.log("sprintss", sprints);
         if (data.sprints.length > 0) {
           const lastSprint = data.sprints[data.sprints.length - 1];
           const lastSprintNumber = parseInt(lastSprint.sprint.match(/Sprint (\d+)/)[1]);
@@ -156,7 +154,7 @@ export default function DisplayBacklog() {
           {backlogsListOpen ? <RiArrowDropUpLine  /> : <RiArrowDropDownLine />}
         </button>
           <h3 >Backlogs</h3>
-       
+          <div className='team-time'><ProjectPage/></div>
      
        </div>
        

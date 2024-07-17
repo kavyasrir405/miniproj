@@ -103,6 +103,7 @@
   background-color: #bd055e; /* Button background color */
   color: #fafafa; /* Text color */
   border: none;
+  
   padding: 10px;
   border-radius: 50%;
   cursor: pointer;
@@ -113,3 +114,8 @@
   background-color: black; /* Darker button background color on hover */
 }
 
+.admin_user{
+  color: #fafafa;
+  margin-left: 600px;
+  font-size: 16px;
+}

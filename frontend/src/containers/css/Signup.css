@@ -44,7 +44,7 @@
     max-width: 400px;
     text-align: center;
     margin-top: 6rem;
-    height: 100vh;
+    height: 80vh;
 }
 
 .signup-heading {
@@ -62,7 +62,7 @@
 }
 
 .signup-form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
     text-align: left;
 }
 
@@ -111,6 +111,8 @@
     font-family: 'Work Sans', sans-serif;
     font-weight: 500;
     color: #333;
+    font-size: 14px;
+    margin-top: 9px;
 }
 
 .signup-link {
@@ -122,3 +124,15 @@
     text-decoration: underline;
 }
 
+#signup-mess{
+    position: fixed;
+    top: 12%;
+    left: 38%;
+    color: #ff347f;
+    background-color: #fff;
+    padding: 7px 28px;
+    width: 300px;
+    border: 1px solid #ff347f;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
