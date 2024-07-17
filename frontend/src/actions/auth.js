@@ -42,10 +42,7 @@ export const createProject = (projectData) => async (dispatch) => {
 export const addIssue = (issue) => async (dispatch) => {
     console.log(issue)
     try {
-       
-        const response = await axios.post('http://localhost:8000/djapp/add/', issue)
-
-       
+        const response = await axios.post('http://localhost:8000/djapp/add/', issue)       
         dispatch({ type: ISSUE_ADDED_SUCCESS, payload: response.data });
     } catch (error) {
         console.log(error)
@@ -135,9 +132,12 @@ export const signup = (first_name,last_name, email, password, re_password) => as
     };
 
     const body = JSON.stringify({ first_name,last_name, email, password, re_password });
+    console.log(body,"from auth in action");
 
     try {
+        console.log("veofre sending auth");
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/users/`, body, config);
+        console.log(res,"after sending auth");
 
         dispatch({
             type: SIGNUP_SUCCESS,

@@ -136,6 +136,8 @@ export default function DisplayBacklog() {
 
           <div className='firstDiv'>
             <h1>Backlog </h1>
+            <br />
+            <div className='team-time'><ProjectPage/></div>
             <Add_team_members projectid={projectid} />
 
             {/* <button onClick={openForm} className='createClass'>Create</button> */}
