@@ -232,7 +232,7 @@ const DropZone = ({ id, items, setItems, onDrop, projectid, user, selectedSprint
         </div>
       )}
 
-      { id === 1 && !showCreateIssue && (
+      { selectedSprint && id === 1 && !showCreateIssue && (
         <div className="create-issue-button" onClick={() => setShowCreateIssue(true)}>
           + Create Issue
         </div>
