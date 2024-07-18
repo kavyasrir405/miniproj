@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import './CommentsStyle.css';
 import { FaRegEdit } from "react-icons/fa";
+import Scroll from '../components/Scroll';
 
 function Comment({ user, data }) {
   const [commentBody, setCommentBody] = useState('');
@@ -72,7 +73,7 @@ function Comment({ user, data }) {
 
   return (
     <div className="comments-section">
-      <h1 className="comments-title">Comments:</h1>
+      <h1 className="comments-title" style={{marginTop:'2rem',  marginBottom:'2rem'}}>Comments:</h1>
       <form onSubmit={handleSubmit} className="comment-form">
         <div className="comment-input-container">
           <textarea
@@ -94,45 +95,51 @@ function Comment({ user, data }) {
           <button type="submit" className="comment-submit-button">Post Comment</button>
         </div>
       </form>
-      <div className="comments-list">
-        {comments.length > 0 ? (
-          comments.map((comment) => (
-            <div key={comment.comment_id} className="comment-item">
-              <p className="comment-body">{comment.comment_body}</p>
-              <p className="comment-author-date">{comment.written_by}</p>
-              <p className="comment-author-date"><small>{comment.created_at}</small></p>
-              {comment.written_by === user.email && (
-                <FaRegEdit onClick={() => startEditing(comment)} className="comment-edit-pen"></FaRegEdit>
-              )}
-              {editingCommentId === comment.comment_id && (
-                <form onSubmit={handleEditSubmit} className="edit-comment-form">
-                  <div className="edit-comment-input-container">
-                    <textarea
-                      className="edit-comment-textarea"
-                      value={editCommentBody}
-                      onChange={(e) => setEditCommentBody(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          editComment();
-                        }
-                      }}
-                      placeholder="Edit your comment"
-                      rows="4"
-                      cols="50"
-                    />
+     
+        <div className="comments-list">
+          {comments.length > 0 ? (
+            comments.map((comment) => (
+              <div key={comment.comment_id} className="comment-item">
+                <div className="comment-body">{comment.comment_body}</div>
+                <div className="comment-meta">
+                  <div className="comment-author-date">
+                    <p>{comment.written_by}</p>
+                    <p><small>{comment.created_at}</small></p>
                   </div>
-                  <div className="edit-comment-submit-button-container">
-                    <button type="submit" className="edit-comment-submit-button">Save Changes</button>
-                  </div>
-                </form>
-              )}
-            </div>
-          ))
-        ) : (
-          <p className="no-comments">No comments yet.</p>
-        )}
-      </div>
+                  {comment.written_by === user.email && (
+                    <FaRegEdit onClick={() => startEditing(comment)} className="comment-edit-pen"></FaRegEdit>
+                  )}
+                </div>
+                {editingCommentId === comment.comment_id && (
+                  <form onSubmit={handleEditSubmit} className="edit-comment-form">
+                    <div className="edit-comment-input-container">
+                      <textarea
+                        className="edit-comment-textarea"
+                        value={editCommentBody}
+                        onChange={(e) => setEditCommentBody(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            editComment();
+                          }
+                        }}
+                        placeholder="Edit your comment"
+                        rows="4"
+                        cols="50"
+                      />
+                    </div>
+                    <div className="edit-comment-submit-button-container">
+                      <button type="submit" className="edit-comment-submit-button">Save Changes</button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            ))
+          ) : (
+            <p className="no-comments">No comments yet.</p>
+          )}
+        </div>
+      
     </div>
   );
 }
@@ -142,3 +149,4 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(Comment);
+

@@ -44,6 +44,19 @@
   margin-top: 20px;
 }
 
+.scroll{
+  overflow: visible; /* Hide the scrollbar */
+  overflow-y: 'scroll';
+}
+
+.tea-time{
+  margin-left: 4rem;
+  margin-top: 2.5rem;
+  display: flex;
+  gap: 10rem;
+  justify-content: space-evenly;
+}
+
 /* Dropdown styling */
 .dropdown select {
   width: 100%;

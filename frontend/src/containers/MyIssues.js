@@ -10,6 +10,7 @@ import './css/FiltersCss.css';
 import Scroll from '../components/Scroll';
 import Sidebar from "../components/Sidebar"
 import ProjectPage from './ProjectPage';
+import AddTeamMembers from './Add_team_members';
 
 function MyIssues({ user, isSidebarCollapsed }) {
   const [selectedProject, setSelectedProject] = useState('');
@@ -77,7 +78,10 @@ function MyIssues({ user, isSidebarCollapsed }) {
 
     <ProjectPage/>
     <div className='main-component'>
-    <div className='team-time'><ProjectPage/></div>
+    <div className='tea-time'>
+        <ProjectPage/>
+        <AddTeamMembers />
+        </div>
       <div className='headers-for-filters top-component'>
         <button onClick={() => { toggleView(); setSelectedIssue(''); }} className='toggleButton'>
 
