@@ -115,7 +115,8 @@ export default function DisplayBacklog() {
     <div className='mainContainer'>
        
     <div className='firstDiv'>
-      <h1>Backlog </h1>
+      <h1>Backlog </h1><br/>
+      <div className='team-time'><ProjectPage/></div>
      <Add_team_members projectid={projectid}/>
 
       {/* <button onClick={openForm} className='createClass'>Create</button> */}
@@ -154,7 +155,7 @@ export default function DisplayBacklog() {
           {backlogsListOpen ? <RiArrowDropUpLine  /> : <RiArrowDropDownLine />}
         </button>
           <h3 >Backlogs</h3>
-          <div className='team-time'><ProjectPage/></div>
+         
      
        </div>
        

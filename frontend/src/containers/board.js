@@ -36,24 +36,24 @@ const DraggableItem = ({ id, IssueName, status, projectid, IssueType, assignee, 
     }),
   }), [id, IssueName, status, IssueType]);
 
-  const [assignee_fullname, setFullname] = useState("");
+  // const [assignee_fullname, setFullname] = useState("");
 
-  const fetchAssigneeName = async () => {
-    try {
-      const response = await axios.post("http://localhost:8000/djapp/fetchassigneeName/", {
-        email: assignee
-      });
-      setFullname(response.data.assigneeName);
-    } catch (error) {
-      console.error("Error fetching assignee name:", error);
-    }
-  };
+  // const fetchAssigneeName = async () => {
+  //   try {
+  //     const response = await axios.post("http://localhost:8000/djapp/fetchassigneeName/", {
+  //       email: assignee
+  //     });
+  //     setFullname(response.data.assigneeName);
+  //   } catch (error) {
+  //     console.error("Error fetching assignee name:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (assignee) {
-      fetchAssigneeName();
-    }
-  }, [assignee]);
+  // useEffect(() => {
+  //   if (assignee) {
+  //     fetchAssigneeName();
+  //   }
+  // }, [assignee]);
 
   const icon = issueTypeToIcon[IssueType];
   const [showPopup, setShowPopup] = useState(false);
@@ -146,8 +146,9 @@ const DropZone = ({ id, items, setItems, onDrop, projectid, user, selectedSprint
       sprint: selectedSprint,
       assigned_epic: null,
     };
-
+    console.log(newIssue)
     try {
+      
       await axios.post('http://localhost:8000/djapp/add/', newIssue);
       setReload(prev => !prev); // Trigger reload
     } catch (error) {
@@ -227,7 +228,7 @@ const DropZone = ({ id, items, setItems, onDrop, projectid, user, selectedSprint
             onChange={(e) => setNewIssueName(e.target.value)}
             placeholder="Enter issue name"
           />
-          <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleCreateIssue(); }}>Create Issue</button>
+          <button onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); handleCreateIssue();  }}>Create Issue</button>
           <button onClick={handleCloseForm}>Cancel</button>
         </div>
       )}
