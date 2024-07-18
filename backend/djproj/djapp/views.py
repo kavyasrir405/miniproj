@@ -264,6 +264,7 @@ def get_sprints(request):
         project_id = request.GET.get('projectid')
         # print("pid", project_id)
         if project_id:
+            base_query = Sprint.objects.exclude(status='completed')
             sprints = Sprint.objects.filter(project__projectid=project_id).values('sprint', 'start_date', 'end_date')
             sprint_list = list(sprints)
             # print(sprint_list)
@@ -389,24 +390,26 @@ def filters_function(request):
             return JsonResponse({"error": "Project ID is required"}, status=400)
         
         issues = []
+
+        base_query = issue.objects.exclude(sprint__status='completed')
         
         if projectid == 'allprojects':
-                issues = list(issue.objects.filter(assignee=current_user).values())
+                issues = list(base_query.filter(assignee=current_user).values())
         else:
             if filter_type == 'all_issues':
-                issues = list(issue.objects.filter(projectId_id=projectid).values())
+                issues = list(base_query.filter(projectId_id=projectid).values())
                 
             elif filter_type == 'assigned_to_me':
-                issues = list(issue.objects.filter(projectId_id=projectid, assignee=current_user).values())
+                issues = list(base_query.filter(projectId_id=projectid, assignee=current_user).values())
                 
             elif filter_type == 'unassigned':
-                issues = list(issue.objects.filter(projectId_id=projectid, assignee='').values())
+                issues = list(base_query.filter(projectId_id=projectid, assignee='').values())
                
             elif filter_type == 'epics':
-                issues = list(Epic.objects.filter(projectId_id=projectid).values())
+                issues = list(base_query.filter(projectId_id=projectid).values())
                 
             elif filter_type == 'Status':
-                issues = list(issue.objects.filter(projectId_id=projectid, status=status).values())
+                issues = list(base_query.filter(projectId_id=projectid, status=status).values())
                 
             else:
                 return JsonResponse({"error": "Invalid filter type"}, status=400)

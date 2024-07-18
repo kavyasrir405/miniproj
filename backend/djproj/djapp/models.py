@@ -91,7 +91,6 @@ class Project_TeamMember(models.Model):
 
 
 class Sprint(models.Model):
-    
     sprint = models.CharField(primary_key=True, max_length=20, default=None)
     sprintName = models.CharField( max_length=20, default="",unique=True,null=True)
     start_date = models.DateField(null=True, blank=True, default=None)
