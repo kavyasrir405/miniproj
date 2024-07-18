@@ -329,7 +329,7 @@ const Board = ({ user }) => {
       const confirmComplete = window.confirm("This sprint is completed. Well done! Do you want to complete it?");
       if (confirmComplete) {
         await axios.get("http://localhost:8000/djapp/updateSprintStatus/", {
-          params: { projectId: projectid, sprintName: selectedSprint }
+          params: { projectId: projectid, sprintName: selectedSprint,status:"completed" }
         });
         fetchSprints();
         setSelectedSprint(sprintOptions[0]?.sprint || '');

@@ -688,14 +688,17 @@ def updateSprintStatus(request):
         project_id = request.GET.get('projectId')
         sprint_name = request.GET.get('sprintName')
         status=request.GET.get('status')
+        print("helllllllooooooooooooooooooooooooooo",sprint_name,status)
 
         try:
             project = Project.objects.get(projectid=project_id)
             sprint = Sprint.objects.get(sprint=sprint_name, project=project)
-
-           
+            print("inside try")
+            print(sprint.sprintName,sprint.status,status)
             sprint.status =status
+            print("before save")
             sprint.save()
+            print("after save")
             return JsonResponse({"message": "Sprint status updated to completed"}, status=200)
 
            
