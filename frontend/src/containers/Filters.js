@@ -8,9 +8,10 @@ import './css/FiltersCss.css';
 import DisplayIssueFiltersWithoutPop from './DisplayIssueFiltersWithoutPop';
 import Comment from './Comment';
 import IssueCardHorizontal from './IssueCardHorizontal';
-import Scroll from '../components/Scroll';
+import CScroll from './CScroll';
 import Sidebar from "../components/Sidebar";
 import ProjectPage from './ProjectPage';
+import AddTeamMembers from './Add_team_members';
 
 const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
   const { projectid } = useParams();
@@ -62,7 +63,10 @@ const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
     <Sidebar />
     <div className='main-component'>
       <div className='headers-for-filters top-component'>
-      <div className='team-time'><ProjectPage/></div>
+      <div className='tea-time'>
+        <ProjectPage/>
+        <AddTeamMembers />
+      </div>
         <button onClick={() => { toggleView(); setSelectedIssue(''); }} className='toggleButton'>{viewType === 'detailed' ? 'List View' : 'Detailed View'}</button>
         <select
           value={selectedFilter}
@@ -95,7 +99,7 @@ const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
       <div className='bottom-component'>
         {viewType === 'detailed' ? (
           <div className='display-container'>
-            
+            <CScroll>
             <div className="issue-cards-container" style={{overflowY:'scroll', border:'1px',scrollbarWidth: 'none',}}>
               {Array.isArray(data) && data.length > 0 ? (
                 data.map(item => (
@@ -105,13 +109,14 @@ const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
                 <h4>No issues found</h4>
               )}
             </div>
+            </CScroll>
             
             <div className='info-display-container'>
               {selectedIssue ? (
-                <Scroll>
+                <CScroll>
                   <DisplayIssueFiltersWithoutPop data={selectedIssue} />
                   <Comment data={selectedIssue} />
-                </Scroll>
+                </CScroll>
               ) : (
                 <div className="nothing-displayed">
                   <h6>Select an Issue</h6>
@@ -146,10 +151,10 @@ const Filters = ({ isAuthenticated, user, isSidebarCollapsed }) => {
           <div className="popup">
             <div className="popup-content">
               <button className="close-button" onClick={handleClosePopup}>X</button>
-              <Scroll>
+              <CScroll>
                 <DisplayIssueFilters data={selectedIssue} />
                 <Comment data={selectedIssue} />
-              </Scroll>
+              </CScroll>
             </div>
           </div>
         )}
