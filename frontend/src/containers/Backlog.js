@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import './css/sprint.css';
 import AssigneeSelector from './AssigneeSelector';
+import DisplayIssueFilters from './DisplayIssueFilters';
 import Modal from './modal';
 import { FaPlus } from "react-icons/fa6";
 import IssueType from './issuseType';
@@ -17,6 +18,8 @@ import { FaTasks } from "react-icons/fa";
 import BoardsIssueDisplay from './BoardsIssueDisplay';
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FaPencilAlt } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+
 
 const Backlog = ({ addIssue, issuesList = [], sprint_name, onissueTypeChange }) => {
   const [showInputField, setShowInputField] = useState(false);
@@ -171,6 +174,7 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange,onDragStart, onDra
       isDragging: !!monitor.isDragging(),
     }),
   }));
+  const user=useSelector(state => state.auth.user);
   // const [{ isDragging }, drag] = useDrag({
   //   type: 'ISSUE',
   //   item: {  issue }, // Specify the item being dragged
@@ -392,7 +396,7 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange,onDragStart, onDra
           {getIssueIcon(issue.IssueType || 'Story')}
           <div className={issue.status === 'Done' ? 'issue-done' : 'value'}>
             {issue.IssueName}
-            <FaPencilAlt onClick={handleEditClick} className="edit-icon" />
+            <FaPencilAlt onClick={  (e) => { e.preventDefault(); e.stopPropagation(); handleEditClick(); } }className="edit-icon" />
           </div>
         </div>
       )}
@@ -431,7 +435,7 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange,onDragStart, onDra
       </div>
       {showPopup && (
         <Modal onClose={togglePopup}>
-        <BoardsIssueDisplay data={issue} />
+        <DisplayIssueFilters data={issue} user={user}/>
       </Modal>
             
 
