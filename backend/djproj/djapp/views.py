@@ -288,29 +288,66 @@ def get_activesprints(request):
         return JsonResponse({'error': 'Method not allowed'}, status=405)
     
 @csrf_exempt
+# def create_issue(request):
+#     print("i got the issue")
+#     if request.method == 'POST':
+#         print("im inside post")
+#         data = request.POST
+        
+#         print(data.get('Attachment'))
+#         pid1 = Project.objects.get(projectid=data.get('ProjectId'))
+#         if data.get('Sprint') != "":
+#             sprint = Sprint.objects.get(sprint=data.get('Sprint'))
+#         else:
+#             sprint = None
+#         print("sprint", sprint)
+#         assigned_epic_name = data.get('Assigned_epic')
+#         if assigned_epic_name:
+#             try:
+#                 epic = Epic.objects.get(EpicName=assigned_epic_name)
+#             except Epic.DoesNotExist:
+#                 epic = None
+#                 print("Epic with name '{}' does not exist".format(assigned_epic_name))
+#         else:
+#             epic = None
+#         print("epic", epic)
+#         file = request.FILES.get('attachment')
+#         print(file)
+#         new_issue = issue.objects.create(
+#             IssueName=data.get('IssueName'),
+#             IssueType=data.get('IssueType'),
+#             sprint=sprint,
+#             projectId=pid1,
+#             status=data.get('Status', 'TODO'),
+#             assignee=data.get('Assignee', ''),
+#             assigned_by=data.get('Assigned_by', ""),
+#             description=data.get('Description', ""),
+#             assigned_epic=epic,
+#             StoryPoint = data.get('storyPoint', 1),
+#             Priority = data.get('priority', 'Medium'),
+#             file_field = file,
+#         )
+#         return JsonResponse({'message': 'Issue created successfully'})
+#     else:
+#         return JsonResponse({'error': 'Only POST method allowed'}, status=405)
+@csrf_exempt
 def create_issue(request):
-    print("i got the issue")
     if request.method == 'POST':
-        print("im inside post")
-        data = json.loads(request.body)
-        print(data.get('Attachment'))
+        # Get form data from request.POST and file from request.FILES
+        data = request.POST
+        print("data",data)
+        file = request.FILES.get('Attachment')  # Fetch the uploaded file
+        print("file",file)
+
+        # Get the project by ID
         pid1 = Project.objects.get(projectid=data.get('ProjectId'))
-        if data.get('Sprint') != "":
-            sprint = Sprint.objects.get(sprint=data.get('Sprint'))
-        else:
-            sprint = None
-        print("sprint", sprint)
+
+        # Handle Sprint and Epic associations (if they exist)
+        sprint = Sprint.objects.get(sprint=data.get('Sprint')) if data.get('Sprint') else None
         assigned_epic_name = data.get('Assigned_epic')
-        if assigned_epic_name:
-            try:
-                epic = Epic.objects.get(EpicName=assigned_epic_name)
-            except Epic.DoesNotExist:
-                epic = None
-                print("Epic with name '{}' does not exist".format(assigned_epic_name))
-        else:
-            epic = None
-        print("epic", epic)
-        file = request.FILES.get('attachment')
+        epic = Epic.objects.get(EpicName=assigned_epic_name) if assigned_epic_name else None
+
+        # Create a new issue with the provided data
         new_issue = issue.objects.create(
             IssueName=data.get('IssueName'),
             IssueType=data.get('IssueType'),
@@ -318,13 +355,14 @@ def create_issue(request):
             projectId=pid1,
             status=data.get('Status', 'TODO'),
             assignee=data.get('Assignee', ''),
-            assigned_by=data.get('Assigned_by', ""),
-            description=data.get('Description', ""),
+            assigned_by=data.get('Assigned_by', ''),
+            description=data.get('Description', ''),
             assigned_epic=epic,
-            StoryPoint = data.get('storyPoint', 1),
-            Priority = data.get('priority', 'Medium'),
-            file_field = file,
+            StoryPoint=data.get('StoryPoint', 1),
+            Priority=data.get('Priority', 'Medium'),
+            file_field=file,  # Save the file from the request
         )
+
         return JsonResponse({'message': 'Issue created successfully'})
     else:
         return JsonResponse({'error': 'Only POST method allowed'}, status=405)
@@ -814,8 +852,6 @@ def get_team_lead(request, projectid):
 
             try:
                 team_lead_user = UserAccount.objects.get(email=team_lead_email)
-                print(team_lead_user)
-
                 team_lead_social_auth = UserSocialAuth.objects.get(uid=team_lead_email)
                 team_lead_picture_url = team_lead_social_auth.extra_data.get('picture', None)
             except ObjectDoesNotExist:
@@ -823,43 +859,39 @@ def get_team_lead(request, projectid):
 
             if not team_lead_picture_url:
                 team_lead_picture_url = {
-                     "background_color": team_lead_user.color ,
-                    "initial":team_lead_user.first_letter }
+                    "background_color": team_lead_user.color,
+                    "initial": team_lead_user.first_letter
+                }
 
-            # Include team lead data in team_members_data list
-            team_members_data = [{
-                'email': team_lead_email,
-                'picture_url': team_lead_picture_url
-            }]
+            team_members_data = []
 
             team_members = Project_TeamMember.objects.filter(project=projectid)
-            print(team_members)
 
             for team_member in team_members:
-                try:
-                    team_member_user = UserAccount.objects.get(email=team_member.team_member_email)
+                if team_member.team_member_email != team_lead_email:
                     try:
-                        team_member_social_auth = UserSocialAuth.objects.get(provider='google-oauth2', uid=team_member.team_member_email)
-                        team_member_picture_url = team_member_social_auth.extra_data.get('picture', None)
+                        team_member_user = UserAccount.objects.get(email=team_member.team_member_email)
+                        try:
+                            team_member_social_auth = UserSocialAuth.objects.get(provider='google-oauth2', uid=team_member.team_member_email)
+                            team_member_picture_url = team_member_social_auth.extra_data.get('picture', None)
+                        except ObjectDoesNotExist:
+                            team_member_picture_url = None
+
+                        if not team_member_picture_url:
+                            team_member_picture_url = {
+                                "background_color": team_member_user.color,
+                                "initial": team_member_user.first_letter
+                            }
+
+                        team_members_data.append({
+                            'email': team_member.team_member_email,
+                            'picture_url': team_member_picture_url
+                        })
                     except ObjectDoesNotExist:
-                        team_member_picture_url = None
-
-                    if not team_member_picture_url:
-                        team_member_picture_url = team_lead_picture_url = {
-                     "background_color": team_member_user.color ,
-                    "initial":team_member_user.first_letter }
-
-
-                    team_members_data.append({
-                        'email': team_member.team_member_email,
-                        'picture_url': team_member_picture_url
-                    })
-                except ObjectDoesNotExist:
-                    team_members_data.append({
-                        'email': team_member.team_member_email,
-                        'picture_url': generate_placeholder_picture(team_member.team_member_email)
-                    })
-            print(team_members_data)
+                        team_members_data.append({
+                            'email': team_member.team_member_email,
+                            'picture_url': generate_placeholder_picture(team_member.team_member_email)
+                        })
 
             return JsonResponse({
                 'team_lead_email': team_lead_email,
@@ -869,7 +901,6 @@ def get_team_lead(request, projectid):
         except Exception as e:
             print(e)
             return JsonResponse({'error': 'An error occurred'}, status=500)
-        
 @csrf_exempt
 def get_user_details(request):
     if request.method == 'GET':
