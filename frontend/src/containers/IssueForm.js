@@ -30,35 +30,48 @@ const IssueForm = ({ onClose, user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = {
-        IssueType: issueType,
-        IssueName: issueName,
-        Sprint: sprint,
-        Status: status,
-        Assignee: assignee,
-        Assigned_by: user.email,
-        Description: summary,
-        ProjectId: selectedProject,
-        StoryPoint: storyPoint,
-        Priority: priority,
-        Attachment: attachment,
-      };
+        const formData = new FormData();
 
-      if (issueType !== "Epic") {
-        console.log(attachment);
-        await axios.post('http://localhost:8000/djapp/create_issue/', data);
-      } else {
-        data.StartDate = new Date(startDate).toISOString().split('T')[0];
-        data.DueDate = new Date(dueDate).toISOString().split('T')[0];
-        data.epicName = epicName;
-        await axios.post('http://localhost:8000/djapp/create_epic/', data);
-      }
+        // Append form data
+        formData.append('IssueType', issueType);
+        formData.append('IssueName', issueName);
+        formData.append('Sprint', sprint);
+        formData.append('Status', status);
+        formData.append('Assignee', assignee);
+        formData.append('Assigned_by', user.email);
+        formData.append('Description', summary);
+        formData.append('ProjectId', selectedProject);
+        formData.append('StoryPoint', storyPoint);
+        formData.append('Priority', priority);
 
-      onClose();
+        // Append file only if it's not null
+        if (attachment) {
+            formData.append('Attachment', attachment);
+        }
+
+        if (issueType !== "Epic") {
+            await axios.post('http://localhost:8000/djapp/create_issue/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+        } else {
+            formData.append('StartDate', new Date(startDate).toISOString().split('T')[0]);
+            formData.append('DueDate', new Date(dueDate).toISOString().split('T')[0]);
+            formData.append('epicName', epicName);
+
+            await axios.post('http://localhost:8000/djapp/create_epic/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+        }
+
+        onClose();
     } catch (error) {
-      console.error('Error creating issue:', error);
+        console.error('Error creating issue:', error);
     }
-  };
+};
 
   useEffect(() => {
     const fetchProjects = async () => {
