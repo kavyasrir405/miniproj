@@ -112,6 +112,7 @@ def csrf_token(request):
     print(csrf_token)
     
     return JsonResponse({'csrfToken': csrf_token})
+    
 @csrf_exempt
 def generate_invitation_token(request):
     if request.method == 'POST':
@@ -691,8 +692,6 @@ def updateSprintStatus(request):
         project_id = request.GET.get('projectId')
         sprint_name = request.GET.get('sprintName')
         status=request.GET.get('status')
-        print("helllllllooooooooooooooooooooooooooo",sprint_name,status)
-
         try:
             project = Project.objects.get(projectid=project_id)
             sprint = Sprint.objects.get(sprint=sprint_name, project=project)
@@ -703,8 +702,6 @@ def updateSprintStatus(request):
             sprint.save()
             print("after save")
             return JsonResponse({"message": "Sprint status updated to completed"}, status=200)
-
-           
 
         except Project.DoesNotExist:
             return JsonResponse({"error": "Project not found"}, status=404)
@@ -748,15 +745,8 @@ def update_issue_name(request):
             data = json.loads(request.body)
             old_issue_name = data.get('oldIssueName', None)
             new_issue_name = data.get('newIssueName', None)
-            
             project_id = data.get('projectId')
-          
-            print("iniside updte issue name")
-            print(old_issue_name)
-            
-            
             issue_obj = issue.objects.get(projectId=project_id, IssueName=old_issue_name)
-           
             issue_obj.IssueName = new_issue_name
             issue_obj.save()
             
@@ -775,10 +765,7 @@ def update_issueassignee(request):
             data = json.loads(request.body)
             issue_name = data.get('issue', None)
             assignee = data.get('assignee', None)
-            
             pid1 = Project.objects.get(projectid=data.get("projectId"))
-            
-
             if issue_name:
                 Issue = issue.objects.get(IssueName=issue_name,projectId=pid1)
                 print("meeeeeeeeeeeeeeeeeeeee",assignee)
