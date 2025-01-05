@@ -32,7 +32,7 @@ const AssigneeSelector = ({ projectid, issue, onAssigneeChange }) => {
       try {
         const teamMembersResponse = await axios.get(`http://localhost:8000/djapp/get_assignee/?projectid=${projectid}`);
         setAssigneeOptions(teamMembersResponse.data.team_members);
-        console.log("assineeeee",teamMembersResponse.data.team_members)
+       
       } catch (error) {
         console.error('Error fetching team members:', error);
       }

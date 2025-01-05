@@ -28,7 +28,7 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
   const dropdownRef = useRef(null);
   const fetchIssues = async () => {
     try {
-      console.log("i am inside fecthIsuuessssss")
+     
       const response = await axios.get("http://localhost:8000/djapp/issuesOfSprint/", {
         params: { projectId: projectid, sprintName: sprint.sprint }
       });

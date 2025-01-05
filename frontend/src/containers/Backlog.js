@@ -4,6 +4,7 @@ import './css/sprint.css';
 import AssigneeSelector from './AssigneeSelector';
 import DisplayIssueFilters from './DisplayIssueFilters';
 import Modal from './modal';
+import { v4 as uuidv4 } from 'uuid';
 import { FaPlus } from "react-icons/fa6";
 import IssueType from './issuseType';
 import { connect } from 'react-redux';
@@ -11,7 +12,8 @@ import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import { addIssue } from '../actions/auth';
 import IssueStatus from './issueStatus';
-import { useDrag } from 'react-dnd';
+import IssueStorypoints from './storypoints';
+import { useDrag,useDrop } from 'react-dnd';
 import { SiStorybook } from "react-icons/si";
 import { FaBug } from 'react-icons/fa';
 import { FaTasks } from "react-icons/fa";
@@ -19,44 +21,69 @@ import BoardsIssueDisplay from './BoardsIssueDisplay';
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FaPencilAlt } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
+import useDragScrolling from "./useDragScrolling";
 
 
 const Backlog = ({ addIssue, issuesList = [], sprint_name, onissueTypeChange }) => {
   const [showInputField, setShowInputField] = useState(false);
   const [selectedIssueType, setSelectedIssueType] = useState('Story');
+
   const { projectid } = useParams();
   const inputContainerRef = useRef(null);
-  const scrollRef = useRef(null); // New ref for scrolling
+  const scrollRef = useRef(null); 
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleDragStart = () => {
+  const handleDragStart = (event) => {
+    
     setIsDragging(true);
-    document.addEventListener('mousemove', handleMouseMove);
+    
+   
+  // document.addEventListener('mousemove', handleMouseMove);
+  
+//   document.addEventListener('mouseup', handleDragEnd);
+//  console.log("insideeeeeeeeeeeeeeeeeee drag start")
   };
+  
+ 
 
   const handleDragEnd = () => {
+    console.log(isDragging)
+    console.log("inside drag end")
     setIsDragging(false);
-    document.removeEventListener('mousemove', handleMouseMove);
+    // document.removeEventListener('mousemove', handleMouseMove); 
+   
+    // document.removeEventListener('mouseup', handleDragEnd);
+   
   };
 
-  const handleMouseMove = (event) => {
-    if (isDragging) {
-      const scrollSpeed = 10;
-      const threshold = 100;
-      const { clientY } = event;
-      let scrollAmount = 0;
+  // const handleMouseMove = (event) => {
+  
+  //   if (isDragging) { 
+  //     console.log("mouseeeeeeeeeeeeee moveeeeee")
+  //     const scrollSpeed = 20;  
+  //     const threshold = 100;  
+  //     const { clientY } = event;  
+  //     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
-      if (clientY < threshold) {
-        scrollAmount = -scrollSpeed; // Scroll up
-      } else if (clientY > window.innerHeight - threshold) {
-        scrollAmount = scrollSpeed; // Scroll down
-      }
+  //     let scrollAmount = 0;
 
-      if (scrollAmount !== 0) {
-        window.scrollBy(0, scrollAmount);
-      }
-    }
-  };
+  //     if (clientY < threshold && scrollTop > 0) {
+  //         scrollAmount = -scrollSpeed;  
+  //     }
+  //     else if (clientY > window.innerHeight - threshold && scrollTop + clientHeight < scrollHeight) {
+  //         scrollAmount = scrollSpeed;  
+  //     }
+  
+  //     if (scrollAmount !== 0) {
+  //         window.scrollBy(0, scrollAmount); // Scroll the page
+  //     }
+  // }
+
+  // };
+  
+  
+  
+    
 
   const handleClickOutside = (event) => {
     if (inputContainerRef.current && !inputContainerRef.current.contains(event.target) && event.target.className !== "EnterIssue") {
@@ -67,7 +94,7 @@ const Backlog = ({ addIssue, issuesList = [], sprint_name, onissueTypeChange }) 
   useEffect(() => {
     if (showInputField && scrollRef.current) {
       const scrollElement = scrollRef.current;
-      const offset = 100; // Change this value to increase/decrease the scroll offset
+      const offset = 100; 
       window.scrollTo({
         top: scrollElement.getBoundingClientRect().top + window.scrollY - offset,
         behavior: 'smooth',
@@ -87,7 +114,7 @@ const Backlog = ({ addIssue, issuesList = [], sprint_name, onissueTypeChange }) 
   }, [showInputField]);
 
   const handleCreateIssueClick = () => {
-    setShowInputField(true); // Open the input field when "Create Issue" button is clicked
+    setShowInputField(true); 
   };
 
   const handleKeyPress = async (event) => {
@@ -113,13 +140,13 @@ const Backlog = ({ addIssue, issuesList = [], sprint_name, onissueTypeChange }) 
         const errorMessage = error.payload ? error.payload.error : 'An unexpected error occurred. Please try again later.';
         alert(errorMessage);
       }
-      setShowInputField(false); // Close the input field after creating the issue
+      setShowInputField(false); 
       event.target.value = '';
     }
   };
 
   const handleInputClick = (event) => {
-    event.stopPropagation(); // Prevent event propagation when input field is clicked
+    event.stopPropagation(); 
   };
 
   return (
@@ -129,7 +156,7 @@ const Backlog = ({ addIssue, issuesList = [], sprint_name, onissueTypeChange }) 
           <div className="empty-message">Create issues to add to our sprint and then start sprint</div>
         ) : (
           issuesList.map((value, index) => {
-            return <DraggableIssue key={index} issue={value} projectid={projectid} onissueTypeChange={onissueTypeChange} onDragStart={handleDragStart} onDragEnd={handleDragEnd} />;
+            return <DraggableIssue  key={uuidv4()} issue={value} projectid={projectid} onissueTypeChange={onissueTypeChange} onDragStart={handleDragStart} onDragEnd={handleDragEnd}  />;
           })
         )}
       </div>
@@ -166,33 +193,90 @@ const Backlog = ({ addIssue, issuesList = [], sprint_name, onissueTypeChange }) 
 
 
 
-const DraggableIssue = ({ issue, projectid, onissueTypeChange,onDragStart, onDragEnd }) => {
-  const [{ isDragging }, drag] = useDrag(() => ({
+const DraggableIssue = ({ issue, projectid, onissueTypeChange, onDragStart, onDragEnd }) => {
+  const {
+    addEventListenerForWindow,
+    removeEventListenerForWindow
+  } = useDragScrolling();
+  const [{ isDragging, clientOffset }, drag, preview, monitor] = useDrag(() => ({
     type: 'ISSUE',
-    item: { issue },
+    item: () => {
+      // Trigger the auto-scrolling when dragging begins
+      addEventListenerForWindow();
+
+      return { issue };
+    },
+    end: () => {
+      // Cleanup after dragging ends
+      removeEventListenerForWindow();
+    },
+    
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
+      clientOffset: monitor.getClientOffset(), // Get the position of the dragged element
     }),
   }));
-  const user=useSelector(state => state.auth.user);
-  // const [{ isDragging }, drag] = useDrag({
-  //   type: 'ISSUE',
-  //   item: {  issue }, // Specify the item being dragged
-  //   collect: (monitor) => ({
-  //     isDragging: !!monitor.isDragging(),
-  //   }),
-  //   // Specify onDragStart and onDragEnd functions
-  //   begin: () => {
-  //     onDragStart();
-  //   },
-  //   end: () => {
-  //     onDragEnd();
-  //   },
-  // });
+
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'ISSUE',
+    drop: () => {
+      console.log('Dropped');
+       
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  }));
+  // const handleScrollBasedOnDrag = () => {
+  //   if (isDragging && clientOffset) {
+  //     const { y } = clientOffset;
+  //     const scrollSpeed = 10;
+  //     const threshold = 50; // Adjust as needed
   
+  //     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  //     let scrollAmount = 0;
+  
+  //     // Scroll up if near the top of the window
+  //     if (y < threshold && scrollTop > 0) {
+  //       scrollAmount = -scrollSpeed;
+  //     }
+  //     // Scroll down if near the bottom of the window
+  //     else if (y > window.innerHeight - threshold && scrollTop + clientHeight < scrollHeight) {
+  //       scrollAmount = scrollSpeed;
+  //     }
+  
+  //     // Ensure that scrolling up does not exceed the top
+  //     if (scrollTop + scrollAmount < 0) {
+  //       scrollAmount = -scrollTop;
+  //     }
+  
+  //     // Ensure scrolling down does not exceed the bottom
+  //     if (scrollTop + clientHeight + scrollAmount > scrollHeight) {
+  //       scrollAmount = scrollHeight - (scrollTop + clientHeight);
+  //     }
+  
+  //     // If scrollAmount is non-zero, trigger smooth scrolling
+  //     if (scrollAmount !== 0) {
+  //       window.scrollBy(0, scrollAmount);
+  //       requestAnimationFrame(handleScrollBasedOnDrag); // Keep scrolling smoothly
+  //     }
+  //   }
+  // };
+  
+  
+  
+
+  // useEffect(() => {
+  //   // Continuously scroll the page while dragging based on the dragged element's position
+  //   if (isDragging) {
+  //     const scrollInterval = setInterval(handleScrollBasedOnDrag, 50);  // Adjust interval as needed
+  //     return () => clearInterval(scrollInterval);  // Clean up when drag ends
+  //   }
+  // }, [isDragging, clientOffset]);
  
-  
-  
+
+
+  const user=useSelector(state => state.auth.user); 
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [dropdownEpics, setDropdownEpics] = useState(false);
   const [Epics, setEpics] = useState([]);
@@ -200,58 +284,16 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange,onDragStart, onDra
   const [editedIssueName, setEditedIssueName] = useState(issue.IssueName);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-
-  // useEffect(() => {
-  //   const handleScroll = (event) => {
-  //     if (isDragging) {
-  //       const { clientY } = event;
-  //       const threshold = 150; // Distance from edge to start scrolling
-  //       const scrollSpeed = 20; // Scrolling speed
-  //       let scrollAmount = 0;
-  
-  //       if (clientY < threshold) {
-  //         scrollAmount = -scrollSpeed; // Scroll up
-  //       } else if (clientY > window.innerHeight - threshold) {
-  //         scrollAmount = scrollSpeed; // Scroll down
-  //       }
-  
-  //       if (scrollAmount !== 0) {
-  //         const scroll = () => {
-  //           window.scrollBy(0, scrollAmount);
-  //           if (isDragging) {
-  //             requestAnimationFrame(scroll);
-  //           }
-  //         };
-  //         requestAnimationFrame(scroll);
-  //       }
-  //     }
-  //   };
-  
-  //   document.addEventListener('mousemove', handleScroll);
-  
-  //   return () => {
-  //     document.removeEventListener('mousemove', handleScroll);
-  //   };
-  // }, [isDragging]);
-  
-  
-  
-  
-  
-  
-  
   const [showPopup, setShowPopup] = useState(false);
   const togglePopup = () => {
     setShowPopup(!showPopup);
   };
-
-
-
+  
   useEffect(() => {
     const fetchTeamMembers = async () => {
       try {
         const teamMembersResponse = await axios.get(`http://localhost:8000/djapp/get_assignee/?projectid=${projectid}`);
-        console.log("teammmmmmmmmmmmm", teamMembersResponse.data.team_members)
+      
         setAssigneeOptions(teamMembersResponse.data.team_members);
       } catch (error) {
         console.error('Error fetching team members and sprints:', error);
@@ -271,38 +313,8 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange,onDragStart, onDra
       document.removeEventListener('click', handleClickOutside);
     };
   }, [dropdownVisible]);
-  // useEffect(() => {
-  //   const fetchcolor = async () => {
-  //     if (selectedAssignee) {
-  //       try {
-  //         const response = await axios.post('http://localhost:8000/djapp/fetch_assignee_color/', { assignee: selectedAssignee });
-  //         console.log("insideassigneeee", response.data.user.color)
-  //         console.log(response.data.user.first_letter)
-  //         setAssigneeColor(response.data.user.color);
-  //         setAssigneeInitial(response.data.user.first_letter);
-  //       } catch (error) {
-  //         console.error('Error fetching team members and sprints:', error);
-  //       }
-  //     };
-  //   }
-  //   fetchcolor();
-  // }, []);
 
-  // useEffect(() => {
-  //   const fetchEpics = async () => {
-  //     try {
-  //       const epicsResponse = await axios.get(`http://localhost:8000/djapp/fecth_epics/?projectid=${projectid}`);
-  //       setEpics(epicsResponse.data.epic_in_project);
-  //     } catch (error) {
-  //       console.error('Error fetching team members and sprints:', error);
-  //     }
-  //   };
-  //   fetchEpics();
-  // }, []);
 
-  // const toggleDropdown = () => {
-  //   setDropdownEpics(!dropdownEpics);
-  // };
 
   const getIssueIcon = (issueType) => {
     switch (issueType) {
@@ -377,7 +389,7 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange,onDragStart, onDra
 
   return (
     <div className="scroll-container">
-    <div className="input-item" ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }} onClick={togglePopup} >
+    <div className="input-item" ref={(node) => drag(drop(node))} style={{ opacity: isDragging ? 0.5 : 1 }} onClick={togglePopup} >
       <div className='left-part' >
       {isEditing ? (
         <>
@@ -424,11 +436,14 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange,onDragStart, onDra
         <div className="right">
           <IssueStatus issueName={issue} pid={projectid} onissueTypeChange={onissueTypeChange} />
         </div>
-        <div className="right1">
+        <div className="storypoints">
+          <IssueStorypoints issueName={issue} pid={projectid} onissueTypeChange={onissueTypeChange} />
+        </div>
+        
           <div className="assignee-container">
           <AssigneeSelector issue={issue} projectid={projectid} onAssigneeChange={(newAssignee) => handleAssigneeChange(newAssignee)} />
            </div>
-        </div>
+       
         <div id="deleteIssue" className="Dropdown" onClick={handleDeleteIssue}>
           <FaRegTrashAlt />
         </div>

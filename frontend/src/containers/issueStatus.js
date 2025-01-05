@@ -17,7 +17,12 @@ export default function IssueStatus({ issueName ,pid,onissueTypeChange}) {
 
   return (
     <div>
-      <select id="status" value={selectedStatus} onChange={handleStatusChange}>
+      <select id="status" value={selectedStatus} onChange={handleStatusChange} style={{
+          width: '100px',
+                
+          padding: '5px',        
+          marginRight: '10px'    
+        }}>
         <option value="To-Do">To Do</option>
         <option value="In-Progress">In Progress</option>
         <option value="Done">Done</option>

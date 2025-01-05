@@ -21,7 +21,7 @@ export default function DisplayBacklog() {
     const [sprints, setSprints] = useState([]);
     const [issues, setissues] = useState([]);
     const [formOpen, setFormOpen] = useState(false);
-    const [sprintCount, setSprintCount] = useState(0); // Initially no sprints
+    const [sprintCount, setSprintCount] = useState(0); 
     const [sprintCreated, setSprintCreated] = useState(false);
     const [deletedSprint,setdeletedSprint]=useState(false)
     const [backlogsListOpen, setBacklogsListOpen] = useState(true);
@@ -37,7 +37,6 @@ export default function DisplayBacklog() {
       setFormOpen(true);
     };
  
-    // Function to close form<button onClick={openForm}>Create</button>
     const closeForm = () => {
       setFormOpen(false);
     };
@@ -52,7 +51,7 @@ export default function DisplayBacklog() {
         setisSprintDeleted(false);
         
        
-        setSprints(data.sprints); // Assign array of sprint objects to state variable
+        setSprints(data.sprints); 
         if (data.sprints.length > 0) {
           const lastSprint = data.sprints[data.sprints.length - 1];
           const lastSprintNumber = parseInt(lastSprint.sprint.match(/Sprint (\d+)/)[1]);
@@ -83,8 +82,8 @@ export default function DisplayBacklog() {
            
             setissues(response.data)
             setIssueChanged(false)
-            console.log("issuessswithoutttsprinttttt",response.data)
-            console.log(issues)
+            
+          
            
           } catch (error) {
             console.error("Error fetching data:", error);

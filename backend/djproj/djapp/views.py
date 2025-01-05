@@ -1059,6 +1059,37 @@ class FileUploadView(APIView):
             file_obj.save()
             file_objs.append(file_obj)
         return Response(status=status.HTTP_201_CREATED)
+@csrf_exempt
+def update_storypoints(request):
+    
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            issue_name = data.get('issue', None)
+            new_status = data.get('status', None)
+            print("insideeeeeeeeeeeeeee stroyyyyyyyyyyyyyyyyy",new_status,issue_name)
+            try:
+                new_status = int(new_status)
+            except (ValueError, TypeError):
+                return JsonResponse({'error': 'Invalid status value. It must be an integer.'}, status=400)
+            
+            pid1 = Project.objects.get(projectid=data.get("projectId"))
+            print(data,issue_name,new_status, "storyyyyyyyyyyyyyy pointssss")
+
+            if issue_name:
+                Issue = issue.objects.get(IssueName=issue_name,projectId=pid1)
+                
+                Issue.StoryPoint = new_status
+                Issue.save()
+
+                return JsonResponse({"message": "Issue status updated"})
+            else:
+                return JsonResponse({"message": "issue name is required"}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({"message": "Invalid JSON format in request body"}, status=400)
+    else:
+        return JsonResponse({"message": "Only POST requests are allowed"}, status=405)
   
 
 
