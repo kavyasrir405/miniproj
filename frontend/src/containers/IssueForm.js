@@ -50,11 +50,13 @@ const IssueForm = ({ onClose, user }) => {
         }
 
         if (issueType !== "Epic") {
+          console.log(formData, "getting tired");
             await axios.post('http://localhost:8000/djapp/create_issue/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+           
         } else {
             formData.append('StartDate', new Date(startDate).toISOString().split('T')[0]);
             formData.append('DueDate', new Date(dueDate).toISOString().split('T')[0]);
@@ -65,6 +67,7 @@ const IssueForm = ({ onClose, user }) => {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+
         }
 
         onClose();
