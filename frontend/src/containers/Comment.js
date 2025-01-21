@@ -17,7 +17,7 @@ function Comment({ user, data }) {
 
   const createComment = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/djapp/create_comment/', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/djapp/create_comment/`, {
         issue_id: data.issue_id,
         project_id: data.project_id,
         written_by: user.email,
@@ -33,7 +33,7 @@ function Comment({ user, data }) {
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/djapp/fetch_comments/${data.id}/`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/fetch_comments/${data.id}/`);
       setComments(response.data);
     } catch (error) {
       console.error('Error fetching comments', error);
@@ -47,7 +47,7 @@ function Comment({ user, data }) {
 
   const editComment = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/djapp/edit_comment/', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/djapp/edit_comment/`, {
         comment_id: editingCommentId,
         comment_body: editCommentBody,
         user_email: user.email

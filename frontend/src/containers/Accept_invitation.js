@@ -5,7 +5,7 @@ import axios from 'axios';
 import './css/accept_invite.css';
 
 const AcceptInvitation = () => {
-  const navigate = useNavigate(); // Get the navigate function
+  const navigate = useNavigate(); // Get the navigate function ${process.env.REACT_APP_API_URL}
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get('token');
@@ -14,7 +14,7 @@ const AcceptInvitation = () => {
 
   const handleAcceptInvitation = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/djapp/verify_invitation_token/', { token: token, projectId:projectId});
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/djapp/verify_invitation_token/`, { token: token, projectId:projectId});
 
       
       console.log('Invitation verified:', response.data);

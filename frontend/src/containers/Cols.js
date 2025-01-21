@@ -8,7 +8,7 @@ const Cols = ({ projectId }) => {
 
   useEffect(() => {
     console.log("colinnnee",projectId)
-    axios.get('http://localhost:8000/djapp/sprints/', {
+    axios.get(`${process.env.REACT_APP_API_URL}/djapp/sprints/`, {
       params: { projectid: projectId }
     })
     .then(response => {

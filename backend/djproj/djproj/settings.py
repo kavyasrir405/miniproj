@@ -30,8 +30,10 @@ SECRET_KEY = 'django-insecure-itdxq1zpl7-bz0vgads%%1e-q%%(yfd*1#^k3hjmlf3m4%u6lk
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = False
-ALLOWED_HOSTS = ['your-heroku-app-name.herokuapp.com']
+DEBUG = True
+ALLOWED_HOSTS = []
+
+# ALLOWED_HOSTS = ['your-heroku-app-name.herokuapp.com']
 
 
 # Application definition
@@ -108,14 +110,14 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-DATABASE_URL = os.getenv('DATABASE_URL')
+# DATABASE_URL = os.getenv('DATABASE_URL')
 
 # If DATABASE_URL exists, switch to a dynamic database (e.g., MySQL for production)
-if DATABASE_URL:
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=600,  # Keep database connections open for 600 seconds
-        ssl_require=True   # Enforce SSL (important for production databases like on Heroku)
-    )
+# if DATABASE_URL:
+#     DATABASES['default'] = dj_database_url.config(
+#         conn_max_age=600,  # Keep database connections open for 600 seconds
+#         ssl_require=True   # Enforce SSL (important for production databases like on Heroku)
+#     )
 
 
 # Password validation
@@ -166,7 +168,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'build/static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 REST_FRAMEWORK = {

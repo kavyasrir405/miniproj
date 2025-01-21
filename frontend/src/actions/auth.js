@@ -30,7 +30,7 @@ import {
 
 export const createProject = (projectData) => async (dispatch) => {
     try {
-        const response = await axios.post('http://localhost:8000/djapp/create/', projectData);
+        const response = await axios.post('${process.env.REACT_APP_API_URL}/djapp/create/', projectData);
         dispatch({ type: PROJECT_CREATE_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: PROJECT_CREATE_FAIL, payload: error.message });
@@ -42,7 +42,7 @@ export const createProject = (projectData) => async (dispatch) => {
 export const addIssue = (issue) => async (dispatch) => {
     console.log(issue)
     try {
-        const response = await axios.post('http://localhost:8000/djapp/add/', issue)       
+        const response = await axios.post('${process.env.REACT_APP_API_URL}/djapp/add/', issue)       
         dispatch({ type: ISSUE_ADDED_SUCCESS, payload: response.data });
     } catch (error) {
         console.log(error)

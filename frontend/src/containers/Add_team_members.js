@@ -14,7 +14,7 @@ const AddTeamMembers = ({ projectid }) => {
     const sendInvitation = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.post('http://localhost:8000/djapp/generate_invitation_token/', { email: email, projectid: projectid });
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/djapp/generate_invitation_token/`, { email: email, projectid: projectid });
             console.log("Invitation sent", response.data);  // or do something else upon success
             setSuccessMessage('Invitation sent successfully!');
             setTimeout(() => {

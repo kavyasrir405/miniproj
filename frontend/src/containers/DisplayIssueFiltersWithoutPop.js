@@ -21,10 +21,10 @@ const DisplayIssueFilters = ({ data, user }) => {
   useEffect(() => {
     const fetchTeamMembersAndSprints = async () => {
       try {
-        const teamMembersResponse = await axios.get(`http://localhost:8000/djapp/get_team_members/?projectid=${selectedProject}`);
+        const teamMembersResponse = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/get_team_members/?projectid=${selectedProject}`);
         setAssigneeOptions(teamMembersResponse.data.team_members);
 
-        const sprintsResponse = await axios.get(`http://localhost:8000/djapp/get_sprints/?projectid=${selectedProject}`);
+        const sprintsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/get_sprints/?projectid=${selectedProject}`);
         setSprintOptions(sprintsResponse.data.sprint_in_project);
       } catch (error) {
         console.error('Error fetching team members and sprints:', error);
@@ -61,7 +61,7 @@ const DisplayIssueFilters = ({ data, user }) => {
     const fetchEpics = async () => {
       try {
         if (!selectedProject) return;
-        const response = await axios.get(`http://localhost:8000/djapp/get_epics/?projectid=${selectedProject}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/get_epics/?projectid=${selectedProject}`);
         setEpics(response.data.epics_in_project);
         console.log(response)
       } catch (error) {
@@ -78,7 +78,7 @@ const DisplayIssueFilters = ({ data, user }) => {
 
   const handleSave = async () => {
     try {
-      await axios.post(`http://localhost:8000/djapp/update_issue/`, issue);
+      await axios.post(`${process.env.REACT_APP_API_URL}/djapp/update_issue/`, issue);
       setIsEditing(false);
     } catch (error) {
       console.error("There was an error updating the issue!", error);
@@ -88,7 +88,7 @@ const DisplayIssueFilters = ({ data, user }) => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/djapp/project_list/?email=${user.email}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/project_list/?email=${user.email}`);
         setProjects(response.data || []);
       } catch (error) {
         console.error('Error fetching projects:', error);

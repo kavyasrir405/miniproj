@@ -19,8 +19,8 @@ const AssigneeSelector = ({ projectid, issue, onAssigneeChange }) => {
   const handleAssigneeSelect = async (assignee) => {
     setSelectedAssignee(assignee.email);
     const assigneeEmail = assignee.email;
-    await axios.post('http://localhost:8000/djapp/update_issueassignee/', { issue: issue.IssueName, assignee: assigneeEmail, projectId: projectid });
-    const response = await axios.post('http://localhost:8000/djapp/fetch_assignee_color/', { assignee: assignee.email });
+    await axios.post(`${process.env.REACT_APP_API_URL}/djapp/update_issueassignee/`, { issue: issue.IssueName, assignee: assigneeEmail, projectId: projectid });
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/djapp/fetch_assignee_color/`, { assignee: assignee.email });
     setAssigneeColor(response.data.user.color);
     setAssigneeInitial(response.data.user.first_letter);
     setDropdownVisible(false);
@@ -30,7 +30,7 @@ const AssigneeSelector = ({ projectid, issue, onAssigneeChange }) => {
   useEffect(() => {
     const fetchTeamMembers = async () => {
       try {
-        const teamMembersResponse = await axios.get(`http://localhost:8000/djapp/get_assignee/?projectid=${projectid}`);
+        const teamMembersResponse = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/get_assignee/?projectid=${projectid}`);
         setAssigneeOptions(teamMembersResponse.data.team_members);
        
       } catch (error) {
@@ -44,7 +44,7 @@ const AssigneeSelector = ({ projectid, issue, onAssigneeChange }) => {
     const fetchColor = async () => {
       if (selectedAssignee) {
         try {
-          const response = await axios.post('http://localhost:8000/djapp/fetch_assignee_color/', { assignee: selectedAssignee });
+          const response = await axios.post(`${process.env.REACT_APP_API_URL}/djapp/fetch_assignee_color/`, { assignee: selectedAssignee });
           setAssigneeColor(response.data.user.color);
           setAssigneeInitial(response.data.user.first_letter);
         } catch (error) {
