@@ -25,7 +25,7 @@ function MyIssues({ user, isSidebarCollapsed }) {
     if (!user || !user.email) return;
     const fetchProjects = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/djapp/project_list/?email=${user.email}`);
+        const response = await axios.get(`http://${process.env.REACT_APP_API_URL}:8000/djapp/project_list/?email=${user.email}`);
         setProjects(response.data || []);
       } catch (error) {
         console.error('Error fetching projects:', error);
@@ -38,7 +38,7 @@ function MyIssues({ user, isSidebarCollapsed }) {
     if (!user || !user.email) return;
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/djapp/filters_function/`, {
+        const response = await axios.get(`http://${process.env.REACT_APP_API_URL}:8000/djapp/filters_function/`, {
           params: {
             filter: selectedFilter,
             status: '',

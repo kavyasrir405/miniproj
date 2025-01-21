@@ -10,7 +10,7 @@ export default function IssueStatus({ issueName ,pid,onissueTypeChange}) {
     onissueTypeChange(true)
    
     try {
-      await axios.post('http://localhost:8000/djapp/update_issueStatus/', { issue:issueName.IssueName ,status: newStatus,projectId:pid});    } catch (error) {
+      await axios.post(`http://${process.env.REACT_APP_API_URL}:8000/djapp/update_issueStatus/`, { issue:issueName.IssueName ,status: newStatus,projectId:pid});    } catch (error) {
       console.error('Error updating issue status:', error);
     }
   };

@@ -12,7 +12,7 @@ const ProjectList = ({ user, clickProject }) => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/djapp/project_list/', {
+                const response = await axios.get(`http://${process.env.REACT_APP_API_URL}:8000/djapp/project_list/`, {
                     params: { email: user.email }
                 });
                 setProjects(response.data);

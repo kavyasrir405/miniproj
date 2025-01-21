@@ -29,7 +29,7 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
   const fetchIssues = async () => {
     try {
      
-      const response = await axios.get("http://localhost:8000/djapp/issuesOfSprint/", {
+      const response = await axios.get(`http://${process.env.REACT_APP_API_URL}:8000/djapp/issuesOfSprint/`, {
         params: { projectId: projectid, sprintName: sprint.sprint }
       });
       setIssues(response.data);
@@ -56,7 +56,7 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
     if (buttonType === 'start') {
       setActions('start')
       setButtonType('complete');
-      const response = await axios.get("http://localhost:8000/djapp/updateSprintStatus/", {
+      const response = await axios.get(`http://${process.env.REACT_APP_API_URL}:8000/djapp/updateSprintStatus/`, {
         params: { projectId: projectid, sprintName: sprint.sprint,status:"complete" }
       });
       
@@ -66,7 +66,7 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
       if (allIssuesDone) {
         const confirmComplete = window.confirm("This sprint is completed. Well done! Do you want to complete it?");
         if (confirmComplete) {
-          const response = await axios.get("http://localhost:8000/djapp/updateSprintStatus/", {
+          const response = await axios.get(`http://${process.env.REACT_APP_API_URL}:8000/djapp/updateSprintStatus/`, {
             params: { projectId: projectid, sprintName: sprint.sprint,status:"completed" }
           });
           onSprintDelete(true);
@@ -93,7 +93,7 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
     const confirmDelete = window.confirm("Are you sure you want to delete this sprint?");
     if (confirmDelete) {
       try {
-        await axios.get("http://localhost:8000/djapp/delete_sprint/", {
+        await axios.get(`http://${process.env.REACT_APP_API_URL}:8000/djapp/delete_sprint/`, {
           params: { projectId: projectid, sprintName: sprint.sprint }
         });
         onissueTypeChange(true);
@@ -112,7 +112,7 @@ const Sprint = ({ sprint, fetchData, onSprintDelete, setissueDragged = null, oni
     accept: 'ISSUE',
     drop: async (item) => {
       setIssues((prevIssues) => [...prevIssues, item.issue]);
-      await axios.post('http://localhost:8000/djapp/update_issueSprint/', { issue: item.issue.IssueName, sprint: sprint.sprint, projectId: projectid });
+      await axios.post(`http://${process.env.REACT_APP_API_URL}:8000/djapp/update_issueSprint/`, { issue: item.issue.IssueName, sprint: sprint.sprint, projectId: projectid });
      
 
       onissueTypeChange(true);

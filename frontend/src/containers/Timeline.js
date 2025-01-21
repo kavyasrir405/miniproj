@@ -73,7 +73,7 @@ const Timeline = ({ projectId }) => {
       .attr('width', width + margin.left + margin.right)
       .attr('height', svgHeight); // Set SVG height
 console.log(projectId,"timeline")
-    axios.get('http://localhost:8000/djapp/sprints/', { params: { projectid: projectId } })
+    axios.get(`http://${process.env.REACT_APP_API_URL}:8000/djapp/sprints/`, { params: { projectid: projectId } })
       .then(response => {
         const sprintData = response.data;
         console.log('Sprint Data:', sprintData); // Add this line to log sprint data
