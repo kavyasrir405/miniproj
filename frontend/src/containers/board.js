@@ -40,7 +40,7 @@ const DraggableItem = ({ id, IssueName, status, projectid, IssueType, assignee, 
 
   // const fetchAssigneeName = async () => {
   //   try {
-  //     const response = await axios.post("http://localhost:8000/djapp/fetchassigneeName/", {
+  //     const response = await axios.post("${process.env.REACT_APP_API_URL}/djapp/fetchassigneeName/", {
   //       email: assignee
   //     });
   //     setFullname(response.data.assigneeName);
@@ -149,7 +149,7 @@ const DropZone = ({ id, items, setItems, onDrop, projectid, user, selectedSprint
     console.log(newIssue)
     try {
       
-      await axios.post('http://localhost:8000/djapp/add/', newIssue);
+      await axios.post(`${process.env.REACT_APP_API_URL}/djapp/add/`, newIssue);
       setReload(prev => !prev); // Trigger reload
     } catch (error) {
       console.log("Error creating issue:", error);
@@ -259,7 +259,7 @@ const Board = ({ user }) => {
   const fetchIssues = async () => {
     if (selectedSprint) {
       try {
-        const response = await axios.get("http://localhost:8000/djapp/issuesOfSprint/", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/issuesOfSprint/`, {
           params: { projectId: projectid, sprintName: selectedSprint }
         });
         const issues = response.data;
@@ -276,7 +276,7 @@ const Board = ({ user }) => {
 
   const fetchSprints = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/djapp/get_activesprints/?projectid=${projectid}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/get_activesprints/?projectid=${projectid}`);
       setSprintOptions(response.data.sprint_in_project);
       if (!sprintName) {
         setSelectedSprint(response.data.sprint_in_project[0]?.sprint || '');
@@ -316,7 +316,7 @@ const Board = ({ user }) => {
     }
 
     try {
-      await axios.post('http://localhost:8000/djapp/update_issueStatus/', { issue: IssueName, status: newStatus, projectId: projectid });
+      await axios.post(`${process.env.REACT_APP_API_URL}/djapp/update_issueStatus/`, { issue: IssueName, status: newStatus, projectId: projectid });
 
       setReload(prev => !prev); // Toggle the reload state to trigger re-render
     } catch (error) {
@@ -329,7 +329,7 @@ const Board = ({ user }) => {
     if (allIssuesDone) {
       const confirmComplete = window.confirm("This sprint is completed. Well done! Do you want to complete it?");
       if (confirmComplete) {
-        await axios.get("http://localhost:8000/djapp/updateSprintStatus/", {
+        await axios.get(`${process.env.REACT_APP_API_URL}/djapp/updateSprintStatus/`, {
           params: { projectId: projectid, sprintName: selectedSprint,status:"completed" }
         });
         fetchSprints();

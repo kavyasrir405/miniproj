@@ -19,7 +19,7 @@ function Contributions({ user }) {
         const fetchProjects = async () => {
             if (user && user.email) {
                 try {
-                    const response = await axios.get(`http://localhost:8000/djapp/project_list/?email=${user.email}`);
+                    const response = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/project_list/?email=${user.email}`);
                     setProjects(response.data || []);
                 } catch (error) {
                     console.error('Error fetching projects:', error);
@@ -33,7 +33,7 @@ function Contributions({ user }) {
     useEffect(() => {
         const fetchIssueStatistics = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/djapp/project/${selectedProject}/issue_statistics/`);
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/project/${selectedProject}/issue_statistics/`);
                 const { done_data = {}, assigned_data = {} } = response.data;
                
                 // Transform data into arrays for Chart.js

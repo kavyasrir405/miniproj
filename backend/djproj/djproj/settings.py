@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from datetime import timedelta
 import os
 from pathlib import Path
+import dj_database_url
+import os
+
 
 
 
@@ -26,9 +29,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-itdxq1zpl7-bz0vgads%%1e-q%%(yfd*1#^k3hjmlf3m4%u6lk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
+DEBUG = True
 ALLOWED_HOSTS = []
+
+# ALLOWED_HOSTS = ['your-heroku-app-name.herokuapp.com']
 
 
 # Application definition
@@ -59,7 +64,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
      'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -103,6 +110,14 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# DATABASE_URL = os.getenv('DATABASE_URL')
+
+# If DATABASE_URL exists, switch to a dynamic database (e.g., MySQL for production)
+# if DATABASE_URL:
+#     DATABASES['default'] = dj_database_url.config(
+#         conn_max_age=600,  # Keep database connections open for 600 seconds
+#         ssl_require=True   # Enforce SSL (important for production databases like on Heroku)
+#     )
 
 
 # Password validation
@@ -153,6 +168,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'build/static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 REST_FRAMEWORK = {
    'DEFAULT_PERMISSION_CLASSES': [

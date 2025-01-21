@@ -8,7 +8,7 @@ const Colsprint = ({ projectId }) => {
 
   useEffect(() => {
     // Fetch sprints for the specific project ID
-    axios.get(`http://localhost:8000/djapp/sprints/?projectid=${projectId}`)
+    axios.get(`${process.env.REACT_APP_API_URL}/djapp/sprints/?projectid=${projectId}`)
       .then(response => {
         setSprints(response.data.sprints);
       })

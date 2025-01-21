@@ -292,7 +292,7 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange, onDragStart, onDr
   useEffect(() => {
     const fetchTeamMembers = async () => {
       try {
-        const teamMembersResponse = await axios.get(`http://localhost:8000/djapp/get_assignee/?projectid=${projectid}`);
+        const teamMembersResponse = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/get_assignee/?projectid=${projectid}`);
       
         setAssigneeOptions(teamMembersResponse.data.team_members);
       } catch (error) {
@@ -331,7 +331,7 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange, onDragStart, onDr
   //   setSelectedEpic(epic);
   //   setDropdownEpics(!dropdownEpics);
   //   try {
-  //     const response = await axios.post('http://localhost:8000/djapp/update_issueepic/', { issue: issue.IssueName, epic: epic, projectId: projectid });
+  //     const response = await axios.post('${process.env.REACT_APP_API_URL}/djapp/update_issueepic/', { issue: issue.IssueName, epic: epic, projectId: projectid });
   //   } catch (error) {
   //     console.error('Error updating issue epic:', error);
   //   }
@@ -341,7 +341,7 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange, onDragStart, onDr
     const confirmDelete = window.confirm("Are you sure you want to delete this issue?");
     if (confirmDelete) {
       try {
-        const response = await axios.get("http://localhost:8000/djapp/delete_issue/", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/delete_issue/`, {
           params: { projectId: projectid, issueName: issue.IssueName }
         });
         alert("Issue deleted successfully");
@@ -374,7 +374,7 @@ const DraggableIssue = ({ issue, projectid, onissueTypeChange, onDragStart, onDr
     if (event.key === 'Enter') {
       handleInputBlur();
       try {
-        const response = await axios.post("http://localhost:8000/djapp/update_issue_name/", {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/djapp/update_issue_name/`, {
           projectId: projectid,
           oldIssueName: issue.IssueName,
           newIssueName: editedIssueName,
