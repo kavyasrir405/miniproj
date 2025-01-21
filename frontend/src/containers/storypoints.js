@@ -15,7 +15,7 @@ export default function IssueStorypoints({ issueName ,pid,onissueTypeChange}) {
     onissueTypeChange(true)
    
     try {
-      await axios.post(`http://${process.env.REACT_APP_API_URL}:8000/djapp/update_storypoints/`, { issue:issueName.IssueName ,status:newStatus,projectId:pid});    } catch (error) {
+      await axios.post(`${process.env.REACT_APP_API_URL}:8000/djapp/update_storypoints/`, { issue:issueName.IssueName ,status:newStatus,projectId:pid});    } catch (error) {
       console.error('Error updating issue storypoints:', error);
     }
   };

@@ -27,7 +27,7 @@ const Login = ({ login, isAuthenticated }) => {
     
         if (projectId != null) {
             try {
-                await axios.post(`http://${process.env.REACT_APP_API_URL}:8000/djapp/process_invitation_token/`, { email: email, projectid: projectId });
+                await axios.post(`${process.env.REACT_APP_API_URL}:8000/djapp/process_invitation_token/`, { email: email, projectid: projectId });
             } catch (err) {
                 if (err.response && err.response.status === 404) {
                     setMessage({ type: 'error', text: 'Invitation token processing endpoint not found.' });
@@ -50,7 +50,7 @@ const Login = ({ login, isAuthenticated }) => {
     
     const continueWithGoogle = async () => {
         try {
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/auth/o/google-oauth2/?redirect_uri=http://${process.env.REACT_APP_API_URL}:8000`);
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/auth/o/google-oauth2/?redirect_uri=${process.env.REACT_APP_API_URL}:8000`);
             window.location.replace(res.data.authorization_url);
         } catch (err) {
             setMessage({ type: 'error', text: 'Google login failed, please try again.' });

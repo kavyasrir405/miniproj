@@ -147,7 +147,7 @@ const SprintForm = ({ closeForm, sendDataToParent, initialFormData, closeDropDow
     }
 
     try {
-      await axios.post('http://localhost:8000/djapp/create_sprint/', formData);
+      await axios.post('localhost:8000/djapp/create_sprint/', formData);
       closeForm(false);
       sendDataToParent(formData);
       // if (action === 'start') {
