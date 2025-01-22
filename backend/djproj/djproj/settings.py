@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-itdxq1zpl7-bz0vgads%%1e-q%%(yfd*1#^k3hjmlf3m4%u6lk
 # SECURITY WARNING: don't run with debug turned on in production!
 
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["http://*"]
 
 # ALLOWED_HOSTS = ['your-heroku-app-name.herokuapp.com']
 
@@ -157,10 +157,10 @@ USE_TZ = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000', 'http://localhost:8000',"http://*" # Add your frontend origin here
+    'http://localhost:3000', 'http://localhost:8000' ,"http://*"# Add your frontend origin here, '*'
 )
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000',"http://*"]
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', "http://*"]
 # Optional: Allow specific headers in CORS requests
 
 STATIC_URL = '/static/'
@@ -209,7 +209,7 @@ DJOSER = {
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
-    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000'],
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000', "http://*"],
     'SERIALIZERS': {
         'user_create': 'djapp.serializers.UserCreateSerializer',
         'user': 'djapp.serializers.UserCreateSerializer',
