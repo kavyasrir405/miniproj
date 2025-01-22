@@ -90,8 +90,12 @@ const Navbar = ({ logout, isAuthenticated, user }) => {
     };
 
     const openViewAllProjects = () => {
-        navigate('/project'); 
+        
+        navigate('/project', { replace: true });
+        window.location.reload();
+        
     };
+
 
     const openForm = () => {
         setFormOpen(true);

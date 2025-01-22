@@ -119,7 +119,7 @@ def generate_invitation_token(request):
         if Project_TeamMember.objects.filter(team_member_email=email,project=project_ins).exists() or project_ins.teamlead_email == email :
             return JsonResponse({'error': 'Email is already associated with this project'}, status=400)
         else:
-            invitation_link = f'http://15.206.147.147:8000"/accept-invitation?projectid={projectid}&token={token}'
+            invitation_link = f'http://localhost:3000/accept-invitation?projectid={projectid}&token={token}'
             subject = "Welcome to Salty- Join Project"
             message = f"Welcome! You're invited to join the project {project_ins.projectname}. \n Click the link to accept:\n{invitation_link}"
             send_mail(subject, message, EMAIL_HOST_USER, [email], fail_silently=True)
