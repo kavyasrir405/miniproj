@@ -51,7 +51,7 @@ const IssueForm = ({ onClose, user }) => {
 
         if (issueType !== "Epic") {
           console.log(formData, "getting tired");
-            await axios.post(`${process.env.REACT_APP_API_URL}/djapp/create_issue/`, formData, {
+            await axios.post(`${process.env.REACT_APP_API_URL}:8000/djapp/create_issue/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -62,7 +62,7 @@ const IssueForm = ({ onClose, user }) => {
             formData.append('DueDate', new Date(dueDate).toISOString().split('T')[0]);
             formData.append('epicName', epicName);
 
-            await axios.post(`${process.env.REACT_APP_API_URL}/djapp/create_epic/`, formData, {
+            await axios.post(`${process.env.REACT_APP_API_URL}:8000/djapp/create_epic/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -79,7 +79,7 @@ const IssueForm = ({ onClose, user }) => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/project_list/?email=${user.email}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}:8000/djapp/project_list/?email=${user.email}`);
         setProjects(response.data || []);
       } catch (error) {
         console.error('Error fetching projects:', error);
@@ -93,10 +93,10 @@ const IssueForm = ({ onClose, user }) => {
     const fetchTeamMembersAndSprints = async () => {
       try {
         if (!selectedProject) return;
-        const teamMembersResponse = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/get_team_members/?projectid=${selectedProject}`);
+        const teamMembersResponse = await axios.get(`${process.env.REACT_APP_API_URL}:8000/djapp/get_team_members/?projectid=${selectedProject}`);
         setAssigneeOptions(teamMembersResponse.data.team_members);
 
-        const sprintsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/get_sprints/?projectid=${selectedProject}`);
+        const sprintsResponse = await axios.get(`${process.env.REACT_APP_API_URL}:8000/djapp/get_sprints/?projectid=${selectedProject}`);
         setSprintOptions(sprintsResponse.data.sprint_in_project);
       } catch (error) {
         console.error('Error fetching team members and sprints:', error);
@@ -110,7 +110,7 @@ const IssueForm = ({ onClose, user }) => {
     const fetchEpics = async () => {
       try {
         if (!selectedProject) return;
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/get_epics/?projectid=${selectedProject}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}:8000/djapp/get_epics/?projectid=${selectedProject}`);
         setEpics(response.data.epics_in_project);
       } catch (error) {
         console.error('Error fetching epics:', error);

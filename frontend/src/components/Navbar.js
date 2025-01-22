@@ -126,7 +126,7 @@ const Navbar = ({ logout, isAuthenticated, user }) => {
 
                     {isAuthenticated ? authLinks() : guestLinks()}
 
-                    {isAuthenticated && (
+                    {isAuthenticated &&  user?.is_admin &&(
                         <Fragment>
                             <button className='nav-button-create' onClick={openForm}>Create Issue</button>
                         </Fragment>

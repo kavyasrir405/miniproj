@@ -127,7 +127,7 @@ const Timemaxi = ({projectId}) => {
       .attr('width', width + margin.left + margin.right)
       .attr('height', svgHeight); // Set SVG height
 
-    axios.get('http://localhost:8000/djapp/sprints/', { params: { projectid: projectId } }) 
+    axios.get(`${process.env.REACT_APP_API_URL}:8000/djapp/sprints/`, { params: { projectid: projectId } }) 
       .then(response => {
         const sprintData = response.data;
         if (Array.isArray(sprintData.sprints)) { 

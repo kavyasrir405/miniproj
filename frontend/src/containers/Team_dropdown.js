@@ -27,7 +27,7 @@ const Team_dropdown = () => {
     const fetchTeamData = async () => {
       try {
         console.log(projectid);
-        const response = await fetch(`http://localhost:8000/djapp/team_lead/${projectid}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}:8000/djapp/team_lead/${projectid}`);
         const data = await response.json();
         setTeamLeadEmail(data.team_lead_email);
         setTeamLeadPictureUrl(data.team_lead_picture_url);

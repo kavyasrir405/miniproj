@@ -16,7 +16,7 @@ const ProjectPage = () => {
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/djapp/team_lead/${projectid}`); 
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}:8000/djapp/team_lead/${projectid}`); 
         const { team_lead_email, team_lead_picture_url, team_members } = response.data;
         setTeamLead(team_lead_email);
         setTeamLeadPictureUrl(team_lead_picture_url);

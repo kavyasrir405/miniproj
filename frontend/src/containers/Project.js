@@ -13,7 +13,7 @@ const Home = ({ user }) => {
     const fetchUserDetails = async () => {
       try {
         console.log("Fetching user details...");
-        const response = await axios.get('http://localhost:8000/djapp/get_user_details/', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}:8000/djapp/get_user_details/`, {
           params: { email: user.email }
         });
         if (response.status === 200) {
