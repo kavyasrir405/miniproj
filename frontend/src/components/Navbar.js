@@ -20,7 +20,7 @@ const Navbar = ({ logout, isAuthenticated, user }) => {
         if (user) {
             const fetchProjects = async () => {
                 try {
-                    const response = await axios.get('${process.env.REACT_APP_API_URL}/djapp/project_list/', {
+                    const response = await axios.get(`${process.env.REACT_APP_API_URL}/djapp/project_list/`, {
                         params: { email: user.email }
                     });
                     setProjects(response.data);
